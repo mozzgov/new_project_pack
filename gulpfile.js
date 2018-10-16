@@ -88,7 +88,6 @@ gulp.task('js:build', function () {
 });
 gulp.task('images:build', function() {
     return gulp.src(path.src.img)
-        .pipe(changed(path.src.img))
         .pipe(imagemin({
             progressive: true,
             svgoPlugins: [{ removeViewBox: false }],
