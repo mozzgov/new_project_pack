@@ -1,0 +1,110 @@
+// mixin @media
+//other
+@mixin mmin($mm) {
+  @media only screen and (min-width: #{$mm}) {
+    @content;
+  }
+}
+@mixin mmax($mm) {
+  @media only screen and (max-width: #{$mm}) {
+    @content;
+  }
+}
+//min
+$screen-sm-min: 576px;
+$screen-md-min: 768px;
+$screen-lg-min: 992px;
+$screen-xl-min: 1200px;
+@mixin min-sm() {
+  @media only screen and (min-width: #{$screen-sm-min}) {
+    @content;
+  }
+}
+@mixin min-md($mm) {
+  @media only screen and (min-width: #{$screen-md-min}) {
+    @content;
+  }
+}
+
+@mixin min-lg($mm) {
+  @media only screen and (min-width: #{$screen-lg-min}) {
+    @content;
+  }
+}
+@mixin min-xl($mm) {
+  @media only screen and (min-width: #{$screen-xl-min}) {
+    @content;
+  }
+}
+
+//max
+$screen-xs-max: 575px;
+$screen-sm-max: 767px;
+$screen-md-max: 991px;
+$screen-lg-max: 1199px;
+$screen-xl-max: 1600px;
+@mixin max-xl($mm) {
+  @media only screen and (max-width: #{$screen-xl-max}) {
+    @content;
+  }
+}
+@mixin max-lg($mm) {
+  @media only screen and (max-width: #{$screen-lg-max}) {
+    @content;
+  }
+}
+@mixin max-md($mm) {
+  @media only screen and (max-width: #{$screen-md-max}) {
+    @content;
+  }
+}
+@mixin max-sm($mm) {
+  @media only screen and (max-width: #{$screen-sm-max}) {
+    @content;
+  }
+}
+@mixin max-xs($mm) {
+  @media only screen and (max-width: #{$screen-xs-max}) {
+    @content;
+  }
+}
+// mixin @media
+
+
+// mixin FONTS
+@function str-replace($string, $search, $replace: "") {
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+
+  @return $string;
+}
+@mixin font-face($name, $path, $weight: null, $style: null, $exts: eot woff2 woff ttf svg) {
+  $src: null;
+
+  $extmods: (
+          eot: "?",
+          svg: "#" + str-replace($name, " ", "_")
+  );
+
+  $formats: (
+          otf: "opentype",
+          ttf: "truetype"
+  );
+
+  @each $ext in $exts {
+    $extmod: if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext);
+    $format: if(map-has-key($formats, $ext), map-get($formats, $ext), $ext);
+    $src: append($src, url(quote("../" + $path + "." + $extmod)) format(quote($format)), comma);
+  }
+
+  @font-face {
+    font-family: quote($name);
+    font-style: $style;
+    font-weight: $weight;
+    src: $src;
+  }
+}
+// mixin FONTS

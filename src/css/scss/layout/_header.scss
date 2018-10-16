@@ -1,0 +1,60 @@
+.header_wrapper {
+  
+}
+
+//
+// menu hamburger
+//
+/* .menu_open_close {
+  cursor: pointer;
+  width: 50px;
+  height: 20px;
+  position: relative;
+  margin: 0 auto;
+  transform: rotate(0deg);
+  transition: .5s ease-in-out;
+  z-index: 150;
+  display: none
+  &.open span:nth-child(4),
+  &.open span:nth-child(1) {
+    top: 18px;
+    width: 0;
+    left: 50%
+  }
+  &.open span:nth-child(2) {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg)
+  }
+  &.open span:nth-child(3) {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg)
+  }
+  & span {
+    display: block;
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    background: #40464a;
+    border-radius: 0;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+    &:nth-child(1) {
+      top: 0
+    }
+    &:nth-child(2),
+    &:nth-child(3){
+      top: 8px
+    }
+    &:nth-child(4) {
+      top: 16px
+    }
+
+  }
+}
+*/
