@@ -52,12 +52,12 @@ gulp.task('css:build', function(){
             browsers: ['last 10 versions' , 'ie >= 11'],
             cascade: false
         }))
+        .pipe(mediaqueries())
         .pipe(cssbeautify({
             indent: '  ',
             openbrace: 'end-of-line',
             autosemicolon: true
         }))
-        .pipe(mediaqueries())
         .pipe(gulp.dest(path.build.css))
         .pipe(livereload())
 
@@ -70,12 +70,12 @@ gulp.task('sass:build', function(){
             browsers: ['last 10 versions' , 'ie >= 11'],
             cascade: false
         }))
+        .pipe(mediaqueries())
         .pipe(cssbeautify({
             indent: '  ',
             openbrace: 'end-of-line',
             autosemicolon: true
         }))
-        .pipe(mediaqueries())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(path.build.css))
         .pipe(livereload())
