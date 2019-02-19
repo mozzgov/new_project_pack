@@ -4,7 +4,7 @@ Creating projet + gulp <br>
 0) del package.json <br>
 1) npm install <br>
   1.1) add package.json <br>
-2) npm install gulp-sass --save-dev <br>
+2) npm install --save-dev <br>
 
 <h1>Start Pack for new project</h1>
 
