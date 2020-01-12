@@ -9,7 +9,7 @@ Creating projet + gulp <br>
 <h1>Start Pack for new project</h1>
 
 <strong>Plugins</strong>: <br>
-   <strong> 1)</strong>      "gulp": "^4.0.2",
+   <strong> 1)</strong>      "gulp": "^4.0.2",<br>
    <strong> 2)</strong>      "gulp-autoprefixer": "^7.0.1", <br>
    <strong> 3)</strong>      "gulp-changed": "^4.0.2", <br>
    <strong> 4)</strong>      "gulp-cssbeautify": "^2.0.0", <br>
@@ -17,7 +17,7 @@ Creating projet + gulp <br>
    <strong> 6)</strong>      "gulp-imagemin": "^6.2.0", <br>
    <strong> 7)</strong>      "gulp-livereload": "^4.0.2", <br>
    <strong> 8)</strong>      "gulp-rigger": "^0.5.8", <br>
-   <strong> 9)</strong>      "gulp-sass": "^4.0.2",<br>
+   <strong> 9)</strong>      "gulp-sass": "^3.2.1",<br>
    <strong> 10)</strong>     "gulp-sourcemaps": "^2.6.5", <br>
    <strong> 11)</strong>     "gulp-watch": "^5.0.1", <br>
    <strong> 12)</strong>     "rimraf": "^3.0.0"
