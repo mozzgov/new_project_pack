@@ -2,11 +2,11 @@
 
 const gulp          =  require('gulp'),
       sass          =  require('gulp-sass'),
+      mediaqueries  =  require('gulp-group-css-media-queries'),
       autoprefixer  =  require('gulp-autoprefixer'),
+      cssbeautify   =  require('gulp-cssbeautify'),
       sourcemaps    =  require('gulp-sourcemaps'),
       livereload    =  require('gulp-livereload'), // need google ext.LiveReload, link:https://goo.gl/DZmxBw
-      cssbeautify   =  require('gulp-cssbeautify'),
-      mediaqueries  =  require('gulp-group-css-media-queries'),
       imagemin      =  require('gulp-imagemin'),
       rigger        =  require('gulp-rigger'),
       watch         =  require('gulp-watch'),
@@ -18,7 +18,8 @@ const gulp          =  require('gulp'),
             js    : './dist/js/',
             css   : './dist/css/',
             img   : './dist/img/',
-            fonts : './dist/fonts/'
+            fonts : './dist/fonts/',
+            jquery: './dist/js/vendor'
         },
         src: {
             html  : './src/**/*.html',
@@ -26,7 +27,8 @@ const gulp          =  require('gulp'),
             scss  : './src/css/scss/**/*.scss',
             css   : './src/css/**/*.css',
             img   : './src/img/**/*.*',
-            fonts : './src/fonts/**/*.*'
+            fonts : './src/fonts/**/*.*',
+            jquery: './node_modules/jquery/dist/jquery.min.js'
         },
         clean: './dist/*'
      };
@@ -36,6 +38,7 @@ gulp.task('clean', function (cb) {
     rimraf(path.clean, cb);
 });
 
+// gulp task build
 gulp.task('html:build', function(done){
     return gulp.src(path.src.html)
         .pipe(rigger())
@@ -51,7 +54,6 @@ gulp.task('fonts:build', function(done) {
 gulp.task('css:build', function(done){
     return gulp.src(path.src.css)
         .pipe(autoprefixer({
-            overrideBrowserslist: ['last 10 versions' , 'ie >= 11'],
             cascade: false
         }))
         .pipe(mediaqueries())
@@ -66,11 +68,15 @@ gulp.task('css:build', function(done){
 });
 gulp.task('sass:build', function(done){
     return gulp.src(path.src.scss)
-        .pipe(sourcemaps.init())
-        .pipe(sass().on('error', sass.logError))
+        // .pipe(sourcemaps.init()) todo not build correctly
+        .pipe(sass(
+            {
+                includePaths: require("scss-resets").includePaths,
+            }
+        ).on('error', sass.logError))
+
         .pipe(autoprefixer({
-            browsers: ['last 10 versions' , 'ie >= 11'],
-            cascade: false
+           cascade: false
         }))
         .pipe(mediaqueries())
         .pipe(cssbeautify({
@@ -78,12 +84,14 @@ gulp.task('sass:build', function(done){
             openbrace: 'end-of-line',
             autosemicolon: true
         }))
-        .pipe(sourcemaps.write())
+        // .pipe(sourcemaps.write()) todo not build correctly
         .pipe(gulp.dest(path.build.css))
         .pipe(livereload());
     done();
 });
 gulp.task('js:build', function (done) {
+    gulp.src(path.src.jquery)
+        .pipe(gulp.dest(path.build.jquery))
     gulp.src(path.src.js)
         .pipe(gulp.dest(path.build.js))
         .pipe(livereload());
