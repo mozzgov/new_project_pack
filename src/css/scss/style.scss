@@ -1,11 +1,19 @@
-@import "../normalize.min.css";
+// Vendor
+//@import 'meyer-reset';
+//@import 'modern-reset';
+@import 'normalize';
+//@import 'sanitize';
+//@import 'sanitize-forms';
+//@import 'sanitize-typography';
+//@import 'reboot';
 
 // Core
 @import "core/_mixin";
 @import "core/_fonts";
 @import "core/_helper_classes.scss";
-@import "core/_base";
 
+//Base
+@import "core/_base";
 
 // Layout
 @import "layout/_header";

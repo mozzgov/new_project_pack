@@ -6,20 +6,36 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Mozzgov",
+  "author": "Maxim Mozzgov",
   "license": "ISC",
   "devDependencies": {
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-changed": "^4.0.2",
-    "gulp-cssbeautify": "^2.0.0",
+    "gulp-cssbeautify": "^3.0.0",
     "gulp-group-css-media-queries": "^1.2.2",
-    "gulp-imagemin": "^6.2.0",
+    "gulp-imagemin": "^7.1.0",
     "gulp-livereload": "^4.0.2",
     "gulp-rigger": "^0.5.8",
-    "gulp-sass": "^3.2.1",
+    "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-watch": "^5.0.1",
-    "rimraf": "^3.0.0"
-  }
+    "rimraf": "^3.0.2",
+    "scss-resets": "^0.5.2",
+    "jquery": "^3.5.1"
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "ie >= 8",
+    "edge >= 15",
+    "ie_mob >= 10",
+    "ff >= 45",
+    "chrome >= 45",
+    "safari >= 7",
+    "opera >= 23",
+    "ios >= 7",
+    "android >= 4",
+    "bb >= 10"
+  ]
 }

@@ -1,0 +1,212 @@
+<!doctype html>
+<html class="no-js" lang="" xmlns="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Typology</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fafafa">
+    <link rel="apple-touch-icon" href="img/favicon/favicon.ico">
+    <link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
+    <meta name="theme-color" content="#fafafa">
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script src="js/vendor/jquery.min.js"></script>
+    <script src="js/main.js"></script>
+    
+    
+    <!--other css-->
+    <style type="text/css">
+      .hljs {display: block;overflow-x: auto;color: black;margin: -15px 0;}
+      .hljs-comment,.hljs-quote,.hljs-variable {color: #008000 }
+      .hljs-keyword,.hljs-selector-tag,.hljs-built_in,.hljs-name,.hljs-tag {color: #00f}
+      .hljs-string,.hljs-title,.hljs-section,.hljs-attribute,.hljs-literal,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-addition {color: #a31515}
+      .hljs-deletion,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-meta {color: #2b91af }
+      .hljs-doctag {color: #808080}
+      .hljs-attr {color: #f00}
+      .hljs-symbol,.hljs-bullet,.hljs-link {color: #00b0e8}
+      .hljs-emphasis {font-style: italic}
+      .hljs-strong {font-weight: bold}
+      .highlight_title-b {
+        padding: 20px 50px;
+      }
+      .highlight_title {
+        font-size: 25px;
+        font-weight: 600;
+        font-style: normal;
+        margin: 10px;
+      }
+      .highlight_title_control {
+        border-bottom: 1px dashed;
+        display: inline-block;
+        margin: 0 10px;
+        font-size: 20px;
+        font-weight: 400;
+        cursor: pointer;
+        color: #333;
+      }
+      figure {
+        overflow: auto;
+        padding: 16px;
+        background-color: #f6f8fa;
+        border: 0.5px solid #ddd;
+        border-radius: 3px;
+        font-family: Courier, monospace;
+        font-size: 12px;
+        line-height: 1.4;
+        display: none;
+        width: calc(100% - 120px);
+        margin: 0 60px;
+      }
+      figure pre {
+        margin: 0;
+      }
+      typology-b {
+        border-bottom: 1px solid #cccccc;
+        display: block;
+        padding-bottom: 20px;
+      }
+      typology-b_code {
+        padding-bottom: 20px;
+      }
+      typologyNav-b {
+        position: fixed;
+        top: 0;
+        background: #333333;
+        z-index: 1;
+        width: 300px;
+        height: 100%;
+        left: -300px;
+        padding: 20px;
+        -webkit-transition: all 0.2s ease;
+        -moz-transition: all 0.2s ease;
+        -ms-transition: all 0.2s ease;
+        -o-transition: all 0.2s ease;
+        transition: all 0.2s ease;
+      }
+      typologyNav-b.open {
+        left: 0;
+        box-shadow: 2px 0px 10px #22222270;
+      }
+      typologyNav-b a {
+        color: #fff;
+        margin: 20px 0px;
+        display: block;
+        font-size: 20px;
+        font-family: Arial;
+        line-height: 1.2;
+        border-bottom: 1px solid;
+        text-decoration: none;
+      }
+      typologyNav-btn.open {
+        left: calc(300px + 2px);
+      }
+      typologyNav-btn {
+        height: 50px;
+        width: 50px;
+        background: #333333;
+        position: fixed;
+        top: 2px;
+        left: 2px;
+        cursor: pointer;
+        -webkit-transition: all 0.2s ease;
+        -moz-transition: all 0.2s ease;
+        -ms-transition: all 0.2s ease;
+        -o-transition: all 0.2s ease;
+        transition: all 0.2s ease;
+      }
+      typologyNav-btn i{
+        height: 3px;
+        width: 40px;
+        background: #fff;
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      typologyNav-btn i:nth-child(1){
+        top: 30%;
+      }
+      typologyNav-btn i:nth-child(3){
+        top: 70%;
+      }
+    </style>
+    <!--other js-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.2/highlight.min.js"></script>
+    <script>
+
+        $(function() {
+
+            $('.language-html').each(function () {
+                let code_r = $(this).html().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+                $(this).html(code_r)
+            })
+            setTimeout(function (){
+                hljs.configure({
+                    tabReplace: '    ', // 4 spaces
+                });
+                $('pre code').each(function(i, e) {
+                    hljs.highlightBlock(e);
+                });
+            },100)
+
+            $('.down').on('click', function (){
+                $('typologyNav-b, typologyNav-btn').toggleClass('open');
+            })
+            $('.highlight_title_control').on('click', function (){
+                $(this).parents('typology-b').find('figure').slideToggle();
+            })
+            $('typologyNav-btn').on('click', function(){
+                $('typologyNav-b').toggleClass('open');
+                $(this).toggleClass('open');
+            })
+        })
+    
+    </script>
+</head>
+<body class="flex-page">
+<!--[if lte IE 9]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+<![endif]-->
+<typologyNav-btn><i></i><i></i><i></i></typologyNav-btn>
+<typologyNav-b>
+    <a class="down" data-offsetdown="-40" href="#block_hero">block_hero</a>
+</typologyNav-b>
+
+//= include/header.html
+
+<div class="main-container">
+    
+    <typology-b>
+        <typology-b_code>
+            <div class="highlight_title-b">
+                <div class="highlight_title" id="block_hero">block_hero</div>
+                <div class="highlight_title_control">view code</div>
+            </div>
+            <figure class="highlight">
+            <pre><code class="language-html" data-lang="html">
+              <section class="hero-b_section">
+                  //= include/header.html
+              </section>
+            </code></pre>
+            </figure>
+        </typology-b_code>
+    
+        <typology-b_view>
+            <section class="hero-b_section">
+                //= include/header.html
+            </section>
+        </typology-b_view>
+    
+    </typology-b>
+
+</div>
+
+//= include/footer.html
+
+</body>
+</html>
+
