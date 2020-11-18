@@ -38,6 +38,7 @@ $screen-xl-min: 1200px;
 }
 
 //max
+$screen-xxs-max: 375px;
 $screen-xs-max: 575px;
 $screen-sm-max: 767px;
 $screen-md-max: 991px;
@@ -65,6 +66,11 @@ $screen-xl-max: 1600px;
 }
 @mixin max-xs {
   @media only screen and (max-width: #{$screen-xs-max}) {
+    @content;
+  }
+}
+@mixin max-xxs {
+  @media only screen and (max-width: #{$screen-xxs-max}) {
     @content;
   }
 }
