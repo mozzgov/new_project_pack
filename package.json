@@ -10,19 +10,20 @@
   "license": "ISC",
   "devDependencies": {
     "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^7.0.1",
-    "gulp-changed": "^4.0.2",
+    "gulp-autoprefixer": "^8.0.0",
+    "gulp-changed": "^4.0.3",
     "gulp-cssbeautify": "^3.0.0",
     "gulp-group-css-media-queries": "^1.2.2",
     "gulp-imagemin": "^7.1.0",
     "gulp-livereload": "^4.0.2",
     "gulp-rigger": "^0.5.8",
-    "gulp-sass": "^4.1.0",
-    "gulp-sourcemaps": "^2.6.5",
+    "gulp-sass": "^5.0.0",
+    "gulp-sourcemaps": "^3.0.0",
     "gulp-watch": "^5.0.1",
+    "jquery": "^3.5.1",
     "rimraf": "^3.0.2",
-    "scss-resets": "^0.5.2",
-    "jquery": "^3.5.1"
+    "sass": "^1.35.2",
+    "scss-resets": "^0.5.2"
   },
   "browserslist": [
     "last 1 version",
