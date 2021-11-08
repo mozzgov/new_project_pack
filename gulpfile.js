@@ -1,20 +1,10 @@
 'use strict';
 // NPP2
- 
-
-
-
-
-
-
-// NPP2 gitignore
- 
 // NPP3
 // NPP4
 // NPP5
 // NPP1
 // NPPMASTER
- 
 const gulp          =  require('gulp'),
       sass          =  require('gulp-sass')(require('sass')),
       mediaqueries  =  require('gulp-group-css-media-queries'),
