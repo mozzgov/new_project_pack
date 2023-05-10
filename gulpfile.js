@@ -14,21 +14,28 @@ const gulp          =  require('gulp'),
 
       path = {
         build: {
-            html  : './dist/',
-            js    : './dist/js/',
-            css   : './dist/css/',
-            img   : './dist/img/',
-            fonts : './dist/fonts/',
-            jquery: './dist/js/vendor'
+            html        : './dist/',
+            js          : './dist/js/',
+            css         : './dist/css/',
+            img         : './dist/img/',
+            fonts       : './dist/fonts/',
+            jquery      : './dist/js/vendor/',
+
+            bootstrapCss  : './dist/css/vendor/bootstrap/',
+            bootstrapJs   : './dist/js/vendor/bootstrap/'
         },
         src: {
-            html  : './src/**/*.html',
-            js    : './src/js/**/*.js',
-            scss  : './src/css/scss/**/*.scss',
-            css   : './src/css/**/*.css',
-            img   : './src/img/**/*.*',
-            fonts : './src/fonts/**/*.*',
-            jquery: './node_modules/jquery/dist/jquery.min.js'
+            html        : './src/**/*.html',
+            js          : './src/js/**/*.js',
+            scss        : './src/css/scss/**/*.scss',
+            css         : './src/css/**/*.css',
+            img         : './src/img/**/*.*',
+            fonts       : './src/fonts/**/*.*',
+            jquery      : './node_modules/jquery/dist/jquery.min.js',
+
+            bootstrapCss    : './src/css/vendor/bootstrap/*.scss',
+            bootstrapJs     : './node_modules/bootstrap/dist/js/bootstrap.js',
+            bootstrapMap    : './node_modules/bootstrap/dist/js/bootstrap.js.map'
         },
         clean: './dist/*'
      };
@@ -66,6 +73,23 @@ gulp.task('css:build', function(done){
         .pipe(livereload());
     done();
 });
+
+gulp.task('bootstrap:build', function(done){
+    return gulp.src('./src/css/vendor/bootstrap/bootstrap.scss')
+        .pipe(sass({outputStyle : 'compressed'}).on('error', sass.logError))
+        .pipe(autoprefixer({
+            cascade: false
+        }))
+        // .pipe(cssbeautify({
+        //     indent: '  ',
+        //     openbrace: 'end-of-line',
+        //     autosemicolon: true
+        // }))
+        .pipe(gulp.dest(path.build.bootstrapCss))
+        .pipe(livereload());
+    done();
+});
+
 gulp.task('sass:build', function(done){
     return gulp.src(path.src.scss)
         // .pipe(sourcemaps.init()) todo not build correctly
@@ -89,9 +113,14 @@ gulp.task('sass:build', function(done){
         .pipe(livereload());
     done();
 });
+
 gulp.task('js:build', function (done) {
     gulp.src(path.src.jquery)
         .pipe(gulp.dest(path.build.jquery))
+    gulp.src(path.src.bootstrapJs)
+        .pipe(gulp.dest(path.build.bootstrapJs))
+    gulp.src(path.src.bootstrapMap)
+        .pipe(gulp.dest(path.build.bootstrapJs))
     gulp.src(path.src.js)
         .pipe(gulp.dest(path.build.js))
         .pipe(livereload());
@@ -114,6 +143,7 @@ gulp.task('build', gulp.series(
     'html:build',
     'sass:build',
     'css:build',
+    'bootstrap:build',
     'js:build',
     'fonts:build',
     'images:build'
@@ -125,6 +155,7 @@ gulp.task('watch', function(done){
     gulp.watch([path.src.html], gulp.series('html:build'));
     //build css and scss if change
     gulp.watch([path.src.scss], gulp.series('sass:build'));
+    gulp.watch([path.src.bootstrapCss], gulp.series('bootstrap:build'));
     gulp.watch([path.src.css], gulp.series('css:build'));
     //build js if change
     gulp.watch([path.src.js], gulp.series('js:build'));

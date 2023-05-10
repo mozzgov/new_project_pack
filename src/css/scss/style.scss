@@ -1,16 +1,16 @@
 // Vendor
 //@import 'meyer-reset';
 //@import 'modern-reset';
-@import 'normalize';
 //@import 'sanitize';
 //@import 'sanitize-forms';
 //@import 'sanitize-typography';
 //@import 'reboot';
+//@import 'normalize';
 
 // Core
 @import "core/_mixin";
 @import "core/_fonts";
-@import "core/_helper_classes.scss";
+@import "core/_helper_classes";
 
 //Base
 @import "core/_base";

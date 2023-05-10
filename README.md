@@ -24,6 +24,7 @@ Creating projet + gulp <br>
     "rimraf"                        : "^3.0.2",
     "scss-resets"                   : "^0.5.2",
     "jquery"                        : "^3.5.1"
+    "bootstrap"                     : "^5.2.3"
 
 <h2>SASS</h2>
 <strong>mixin:</strong><br>
@@ -35,4 +36,3 @@ Creating projet + gulp <br>
 //
 </pre>
  
-    
