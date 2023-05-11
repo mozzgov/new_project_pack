@@ -9,11 +9,14 @@
 
 // Core
 @import "core/_mixin";
+@import "core/_variables";
+
 @import "core/_fonts";
 @import "core/_helper_classes";
 
 //Base
 @import "core/_base";
+@import "core/_themes";
 
 // Layout
 @import "layout/_header";
