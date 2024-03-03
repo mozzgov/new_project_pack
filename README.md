@@ -6,7 +6,7 @@ Creating projet + gulp <br>
   1.1) add package.json <br>
 2) npm install --save-dev <br>
 
-<h1>Start Pack for new project</h1>
+<h1>Start Pack for new project 1</h1>
 
 <strong>Plugins 1</strong>: <br>
                                           
