@@ -8,7 +8,7 @@ Creating projet + gulp <br>
 
 <h1>Start Pack for new project</h1>
 
-<strong>Plugins</strong>: <br>
+<strong>Plugins 1</strong>: <br>
                                           
     "gulp"                          : "^4.0.2",
     "gulp-autoprefixer"             : "^7.0.1",
