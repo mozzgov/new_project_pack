@@ -1,26 +1,24 @@
-// Vendor
-//@import 'meyer-reset';
-//@import 'modern-reset';
-//@import 'sanitize';
-//@import 'sanitize-forms';
-//@import 'sanitize-typography';
-//@import 'reboot';
-//@import 'normalize';
+/* Vendor */
+/* @import 'meyer-reset'; */
+/* @import 'modern-reset'; */
+/* @import 'sanitize'; */
+/* @import 'sanitize-forms'; */
+/* @import 'sanitize-typography'; */
+/* @import 'reboot'; */
+/* @import 'normalize'; */
 
-// Core
-@import "core/_mixin";
-@import "core/_variables";
+/* To include Bootstrap in the main bundle, uncomment the following line. */
+/* @import "../vendor/bootstrap/bootstrap"; */
 
-@import "core/_fonts";
-@import "core/_helper_classes";
+/* Core */
+@use "core/mixin";
+@use "core/variables";
+@use "core/fonts";
+@use "core/helper_classes";
 
-//Base
-@import "core/_base";
-@import "core/_themes";
+/* Base */
+@use "core/base";
 
-// Layout
-@import "layout/_header";
-@import "layout/_footer";
-
-
-//etc.
+/* Layout */
+@use "layout/header";
+@use "layout/footer";

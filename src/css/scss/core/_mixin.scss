@@ -1,30 +1,30 @@
-//vendor
-@import "./node_modules/bootstrap/scss/functions";
-@import "./node_modules/bootstrap/scss/mixins";
-//vendor
-
-// mixin @media
-//other
+/* Custom mixins and helper utilities */
+/* mixin @media */
+/* other */
 @mixin mmin($mm) {
   @media only screen and (min-width: #{$mm}) {
     @content;
   }
 }
+
 @mixin mmax($mm) {
   @media only screen and (max-width: #{$mm}) {
     @content;
   }
 }
-//min
+
+/* min */
 $screen-sm-min: 576px;
 $screen-md-min: 768px;
 $screen-lg-min: 992px;
 $screen-xl-min: 1200px;
+
 @mixin min-sm {
   @media only screen and (min-width: #{$screen-sm-min}) {
     @content;
   }
 }
+
 @mixin min-md {
   @media only screen and (min-width: #{$screen-md-min}) {
     @content;
@@ -36,53 +36,61 @@ $screen-xl-min: 1200px;
     @content;
   }
 }
+
 @mixin min-xl {
   @media only screen and (min-width: #{$screen-xl-min}) {
     @content;
   }
 }
 
-//max
+/* max */
 $screen-xxs-max: 375px;
 $screen-xs-max: 575px;
 $screen-sm-max: 767px;
 $screen-md-max: 991px;
 $screen-lg-max: 1199px;
 $screen-xl-max: 1600px;
+
 @mixin max-xl {
   @media only screen and (max-width: #{$screen-xl-max}) {
     @content;
   }
 }
+
 @mixin max-lg {
   @media only screen and (max-width: #{$screen-lg-max}) {
     @content;
   }
 }
+
 @mixin max-md {
   @media only screen and (max-width: #{$screen-md-max}) {
     @content;
   }
 }
+
 @mixin max-sm {
   @media only screen and (max-width: #{$screen-sm-max}) {
     @content;
   }
 }
+
 @mixin max-xs {
   @media only screen and (max-width: #{$screen-xs-max}) {
     @content;
   }
 }
+
 @mixin max-xxs {
   @media only screen and (max-width: #{$screen-xxs-max}) {
     @content;
   }
 }
-// mixin @media
+
+/* mixin @media */
 
 
-// mixin FONTS
+/* mixin FONTS */
 @function str-replace($string, $search, $replace: "") {
   $index: str-index($string, $search);
 
@@ -92,14 +100,13 @@ $screen-xl-max: 1600px;
 
   @return $string;
 }
+
 @mixin font-face($name, $path, $weight: null, $style: null, $exts: eot woff2 woff ttf svg) {
   $src: null;
-
   $extmods: (
           eot: "?",
           svg: "#" + str-replace($name, " ", "_")
   );
-
   $formats: (
           otf: "opentype",
           ttf: "truetype"
@@ -118,4 +125,5 @@ $screen-xl-max: 1600px;
     src: $src;
   }
 }
-// mixin FONTS
+
+/* mixin FONTS */

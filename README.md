@@ -1,38 +1,45 @@
-# new_project
-Creating projet + gulp <br>
+## New Project Starter
 
-0) del package.json <br>
-1) npm install <br>
-  1.1) add package.json <br>
-2) npm install --save-dev <br>
+Ready-to-use Gulp stack for modern frontend builds: SCSS, TypeScript, native JavaScript, Bootstrap 5.3.8, BrowserSync, and lightweight linting.
 
-<h1>Start Pack for new project 1</h1>
+### What's Included
+- Gulp 5 tasks (`build`, `clean`, `dev`) with BrowserSync live reload.
+- SCSS pipeline via `gulp-sass`, grouped media queries, autoprefixer, sourcemaps in development.
+- Bootstrap SCSS entry at `src/css/vendor/bootstrap/bootstrap.scss`; toggle components in `bootstrap-components.scss`.
+- Dual JS workflow: native ES2018+ code in `src/js` bundling into `dist/js/script.js`, and TypeScript in `src/ts` bundling via esbuild into `dist/js/app.js`.
+- ESLint (TS) via `npm run lint` with strict mode.
 
-<strong>Plugins 1</strong>: <br>
-                                          
-    "gulp"                          : "^4.0.2",
-    "gulp-autoprefixer"             : "^7.0.1",
-    "gulp-changed"                  : "^4.0.2",
-    "gulp-cssbeautify"              : "^3.0.0",
-    "gulp-group-css-media-queries"  : "^1.2.2",
-    "gulp-imagemin"                 : "^7.1.0",
-    "gulp-livereload"               : "^4.0.2",
-    "gulp-rigger"                   : "^0.5.8",
-    "gulp-sass"                     : "^4.1.0",
-    "gulp-sourcemaps"               : "^2.6.5",
-    "gulp-watch"                    : "^5.0.1",
-    "rimraf"                        : "^3.0.2",
-    "scss-resets"                   : "^0.5.2",
-    "jquery"                        : "^3.5.1"
-    "bootstrap"                     : "^5.2.3"
+### Quick Start
+```
+npm install
+npm run start    # gulp dev (build + watcher + BrowserSync)
+```
 
-<h2>SASS</h2>
-<strong>mixin:</strong><br>
- <strong>1)</strong> @MediaQuery <br>
- <strong>2)</strong> Fonts<br>
-<pre>
-//                   Name     URL            FW   FS      .FF
-//@include font-face(Univers, fonts/Univers, 400, normal, eot otf svg woff woff2);)
-//
-</pre>
- 
+Other scripts:
+- `npm run build` — production build (`NODE_ENV=production`, minified assets, no sourcemaps).
+- `npm run clean` — remove `dist`.
+- `npm run lint` — ESLint with `--strict-lint`.
+
+### Development Commands
+- `gulp scriptsJs` — bundle native JavaScript (`src/js`) into `dist/js/script.js`.
+- `gulp scriptsTs` — bundle TypeScript (`src/ts`) into `dist/js/app.js`.
+- `gulp copyJsVendor` / `gulp copyTsVendor` — copy vendor assets without bundling.
+- `gulp styles` / `gulp bootstrapStyles` — build SCSS bundles individually.
+
+Component directories follow `src/css/vendor/bootstrap` for Bootstrap overrides and `src/css/scss` for project sections (core, layout, components).
+
+### Structure
+- `src/css/scss` — project styles, entry point `style.scss`.
+- `src/css/vendor/bootstrap` — Bootstrap SCSS overrides and component list.
+- `src/js` — native JS modules, main entry `main.js`, vendor assets in `src/js/vendor`.
+- `src/ts` — TypeScript modules exported via `modules/index.ts`, main entry `main.ts`.
+- `dist/` — build output (HTML, CSS, JS, images, fonts, vendor assets).
+
+### Highlights
+- Bootstrap flexibility: keep a separate bundle (`dist/css/vendor/bootstrap/bootstrap.css`) or import into `style.scss`.
+- Unified JS/TS bundling through esbuild (IIFE targets, minification in production).
+- Environment-specific paths and BrowserSync settings configured via `.env` (see `env.example`). When `BS_USE_PROXY=true`, open the site through the BrowserSync address (for example, `http://newprojectpack.local:3000`) to keep live reload working.
+- Gulp-notify + plumber keep tasks resilient.
+- `gulp-imagemin` optimizes images during builds.
+
+Edit `src`, run `npm run start`, and develop with live reload out of the box.
