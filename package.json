@@ -30,7 +30,7 @@
     "gulp-rigger": "^0.5.8",
     "gulp-sass": "^6.0.1",
     "gulp-sourcemaps": "^3.0.0",
-    "esbuild": "^0.23.0",
+    "esbuild": "^0.25.0",
     "jquery": "^3.7.1",
     "@typescript-eslint/eslint-plugin": "^8.11.0",
     "@typescript-eslint/parser": "^8.11.0",
