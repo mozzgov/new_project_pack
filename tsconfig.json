@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "lib": ["DOM", "DOM.Iterable", "ES2018"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "allowJs": true,
+    "declaration": false,
+    "sourceMap": true,
+    "outDir": "dist/js",
+    "rootDir": "src/ts",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/ts/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+

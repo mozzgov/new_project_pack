@@ -1,10 +1,11 @@
-.header_wrapper {
+.header-container {
   
 }
 
-//
-// menu hamburger
-//
+/*  */
+/* menu hamburger */
+/*  */
+
 /* .menu_open_close {
   cursor: pointer;
   width: 50px;
@@ -22,15 +23,9 @@
     left: 50%
   }
   &.open span:nth-child(2) {
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
     transform: rotate(45deg)
   }
   &.open span:nth-child(3) {
-    -webkit-transform: rotate(-45deg);
-    -moz-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
     transform: rotate(-45deg)
   }
   & span {

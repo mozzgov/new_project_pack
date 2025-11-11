@@ -1,96 +1,125 @@
+@use "./mixin" as mixin;
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */
 .wrapper {
-  position: relative;
-  width: 1200px;
+  height: 100%;
   margin: 0 auto;
   padding: 0 15px;
-  height: 100%;
-  @include max-lg {
+  position: relative;
+  width: 1200px;
+
+  @include mixin.max-lg {
     width: 990px;
   }
-  @include max-md {
+
+  @include mixin.max-md {
     width: 768px;
   }
-  @include max-sm {
+
+  @include mixin.max-sm {
     width: 100%;
   }
 }
+
 .no_margin {
   margin: 0;
 }
+
 .flex_wrap {
   flex-wrap: wrap;
 }
+
 .flex_box {
   display: flex;
 }
+
 .flex_j_a_center {
-  justify-content: center;
   align-items: center;
   align-self: center;
+  justify-content: center;
 }
+
 .flex_j_center {
   justify-content: center;
 }
+
 .flex_j_left {
   justify-content: left;
 }
+
 .flex_j_right {
   justify-content: right;
 }
+
 .flex_a_center {
   align-items: center;
   align-self: center;
 }
+
 .flex_a_top {
   align-items: flex-start;
 }
+
 .flex_a_bottom {
   align-items: flex-end;
 }
+
 .flex_a_stretch {
   align-items: stretch;
 }
+
 .flex_margin_center {
-  margin-right: auto;
   margin-left: auto;
+  margin-right: auto;
 }
+
 .flex_margin_left {
   margin-left: auto;
 }
+
 .flex_margin_right {
   margin-right: auto;
 }
+
 .flex_row-reverse {
   flex-direction: row-reverse;
 }
+
 .center {
   text-align: center!important;
 }
+
 .left {
   text-align: left!important;
 }
+
 .right {
   text-align: right!important;
 }
+
 .fw700{
   font-weight: 700;
 }
+
 .fw600{
   font-weight: 600;
 }
+
 .fw500{
   font-weight: 500;
 }
+
 .fw400{
   font-weight: 400;
 }
+
 .fw300{
   font-weight: 300;
 }
-//fixed autofill bg color
+
+/* fixed autofill bg color */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -101,11 +130,10 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus  {
-  -webkit-transition: color 9999s ease-out, background-color 9999s ease-out!important;
-  -webkit-transition-delay: 9999s!important;
   transition: color 9999s ease-out, background-color 9999s ease-out!important;
   transition-delay: 9999s!important;
 }
+
 [hidden],
 .hidden {
   display: none !important;
@@ -115,28 +143,26 @@ select:-webkit-autofill:focus  {
 .visuallyhidden {
   border: 0;
   clip: rect(0 0 0 0);
-  -webkit-clip-path: inset(50%);
   clip-path: inset(50%);
   height: 1px;
   margin: -1px;
   overflow: hidden;
   padding: 0;
   position: absolute;
-  width: 1px;
   white-space: nowrap; /* 1 */
+  width: 1px;
 }
 
 .visuallyhidden.focusable:active,
 .visuallyhidden.focusable:focus {
   clip: auto;
-  -webkit-clip-path: none;
   clip-path: none;
   height: auto;
   margin: 0;
   overflow: visible;
   position: static;
-  width: auto;
   white-space: inherit;
+  width: auto;
 }
 
 .invisible {
@@ -162,9 +188,10 @@ select:-webkit-autofill:focus  {
   *::before,
   *::after {
     background: #fff !important;
-    color: #000 !important;
+
     /* Black prints faster */
     box-shadow: none !important;
+    color: #000 !important;
     text-shadow: none !important;
   }
 
