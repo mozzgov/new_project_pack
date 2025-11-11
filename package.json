@@ -16,7 +16,7 @@
     "@types/jquery": "^3.5.33",
     "bootstrap": "^5.3.8",
     "gulp": "^5.0.1",
-    "browser-sync": "^2.29.3",
+    "browser-sync": "^3.0.4",
     "dotenv": "^16.4.5",
     "eslint": "^9.11.1",
     "fancy-log": "^2.0.0",
