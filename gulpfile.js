@@ -41,6 +41,8 @@ const toNumber = (value, fallback) => {
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isStrictLint = isProduction || process.argv.includes('--strict-lint');
+const isLintEnabled =
+  !process.argv.includes('--no-lint') && toBool(process.env.GULP_LINT, true);
 
 const resetIncludePaths = Array.isArray(scssResets.includePaths)
   ? scssResets.includePaths.map((p) => path.resolve(p))
@@ -58,10 +60,6 @@ const sassBaseOptions = {
   includePaths: sassIncludePaths,
   quietDeps: true
 };
-
-const autoprefixerModule = require('gulp-autoprefixer');
-const autoprefix = (options = {}) =>
-  (typeof autoprefixerModule === 'function' ? autoprefixerModule : autoprefixerModule.default)(options);
 
 const SRC_DIR = process.env.SRC_DIR || 'src';
 const DIST_DIR = process.env.DIST_DIR || 'dist';
@@ -137,6 +135,7 @@ const plumberNotify = (title) =>
 
 let imageminPlugin;
 let eslintLib;
+let autoprefixerPlugin;
 
 async function loadImagemin() {
   if (!imageminPlugin) {
@@ -161,6 +160,15 @@ async function loadEslint() {
   return eslintLib;
 }
 
+async function loadAutoprefixer() {
+  if (!autoprefixerPlugin) {
+    const module = await import('gulp-autoprefixer');
+    autoprefixerPlugin = typeof module === 'function' ? module : module.default;
+  }
+
+  return autoprefixerPlugin;
+}
+
 async function clean() {
   await rm(paths.clean, { recursive: true, force: true });
 }
@@ -179,7 +187,9 @@ function fonts() {
     .pipe(browserSync.stream({ once: true }));
 }
 
-function css() {
+async function css() {
+  const autoprefix = await loadAutoprefixer();
+
   return src(paths.styles.css, { allowEmpty: true })
     .pipe(plumberNotify('CSS'))
     .pipe(
@@ -193,7 +203,9 @@ function css() {
     .pipe(browserSync.stream());
 }
 
-function styles() {
+async function styles() {
+  const autoprefix = await loadAutoprefixer();
+
   return src(paths.styles.scss, { allowEmpty: true })
     .pipe(plumberNotify('SCSS'))
     .pipe(gulpIf(!isProduction, sourcemaps.init()))
@@ -215,7 +227,9 @@ function styles() {
     .pipe(browserSync.stream());
 }
 
-function bootstrapStyles() {
+async function bootstrapStyles() {
+  const autoprefix = await loadAutoprefixer();
+
   return src(paths.styles.bootstrap, { allowEmpty: true })
     .pipe(plumberNotify('Bootstrap SCSS'))
     .pipe(gulpIf(!isProduction, sourcemaps.init()))
@@ -342,7 +356,7 @@ async function lintScripts() {
 }
 
 const copyVendor = parallel(vendorJquery, vendorBootstrap);
-const lint = parallel(lintScripts);
+const lint = isLintEnabled ? parallel(lintScripts) : (done) => done();
 
 const build = series(
   clean,
