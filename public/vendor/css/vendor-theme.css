@@ -1,0 +1,13 @@
+/* External/vendor CSS served verbatim from /vendor (public/ -> dist/).
+   Not processed or hashed by Vite. Reference it directly in HTML:
+   <link rel="stylesheet" href="/vendor/css/vendor-theme.css" /> */
+
+.vendor-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #6f42c1;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+}

@@ -1,0 +1,14 @@
+/* Plain CSS (not SCSS). Imported from JS/TS and bundled into the final
+   stylesheet by Vite. Use this when you have vanilla CSS you don't want to
+   run through the Sass pipeline. */
+
+.native-note {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: #198754;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
