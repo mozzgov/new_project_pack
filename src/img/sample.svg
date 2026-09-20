@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Deliberately unoptimized SVG to demonstrate the svgo pass in srcStatic().
+     Comments, metadata and redundant precision are stripped in dist/img. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="120.00000" height="120.00000" viewBox="0.0 0.0 120.0 120.0" version="1.1">
+  <title>Sample vendor SVG</title>
+  <desc>A small rounded square used to show that SVGs are optimized on copy.</desc>
+  <metadata>
+    Sample metadata block that svgo removes.
+  </metadata>
+  <g id="layer1">
+    <rect x="10.0000" y="10.0000" width="100.0000" height="100.0000" rx="16.0000" fill="#6f42c1" stroke="#3d2a6b" stroke-width="4.0000000" />
+    <circle cx="60.0000000" cy="60.0000000" r="28.0000000" fill="#ffffff" />
+  </g>
+</svg>

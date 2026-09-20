@@ -1,7 +1,23 @@
 @use '../abstracts/mixins' as mixin;
 
-// Drop your web fonts in `public/fonts/` and register them here.
-// Paths are resolved from the built CSS, so `/fonts/...` points at `public/fonts/`.
+// Web fonts
+// ---------------------------------------------------------------------------
+// Drop your font files in `src/fonts/`. They are copied verbatim to
+// `dist/fonts/` (and served at `/fonts/...` in dev) by the srcStatic() plugin
+// in vite.config.ts, so `url('/fonts/...')` resolves in both dev and build.
 //
-// Example:
-//   @include mixin.font-face('Univers', '/fonts/univers', 400, normal, woff2 woff);
+// The `font-face` mixin (see src/styles/abstracts/_mixins.scss) generates the
+// @font-face block. Signature:
+//   font-face($name, $path, $weight, $style, $exts)
+// `$path` is the file path WITHOUT extension; `$exts` lists the formats to emit
+// (default: woff2 woff).
+//
+// The example below is commented out on purpose so the starter doesn't request
+// font files that don't exist yet (which would 404). Add e.g.
+// `src/fonts/inter-regular.woff2` + `.woff`, then uncomment:
+//
+// @include mixin.font-face('Inter', '/fonts/inter-regular', 400, normal, woff2 woff);
+// @include mixin.font-face('Inter', '/fonts/inter-bold', 700, normal, woff2 woff);
+//
+// Then use it anywhere:
+//   body { font-family: 'Inter', system-ui, sans-serif; }
