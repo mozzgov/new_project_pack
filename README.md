@@ -1,45 +1,77 @@
-## New Project Starter
+# Frontend Starter
 
-Ready-to-use Gulp stack for modern frontend builds: SCSS, TypeScript, native JavaScript, Bootstrap 5.3.8, BrowserSync, and lightweight linting.
+Lightweight, modern frontend starter: **Vite + TypeScript + SCSS + Bootstrap 5**. Clone it and start building — instant HMR in dev, optimized Rollup build for production.
 
-### What's Included
-- Gulp 5 tasks (`build`, `clean`, `dev`) with BrowserSync live reload.
-- SCSS pipeline via `gulp-sass`, grouped media queries, autoprefixer, sourcemaps in development.
-- Bootstrap SCSS entry at `src/css/vendor/bootstrap/bootstrap.scss`; toggle components in `bootstrap-components.scss`.
-- Dual JS workflow: native ES2018+ code in `src/js` bundling into `dist/js/script.js`, and TypeScript in `src/ts` bundling via esbuild into `dist/js/app.js`.
-- ESLint (TS) via `npm run lint` with strict mode.
+## Stack
 
-### Quick Start
-```
+- **Vite 8** — dev server with hot module replacement, production bundling.
+- **TypeScript** — strict mode, native ESM.
+- **SCSS** via `sass-embedded` with the modern `@use` module system.
+- **Bootstrap 5.3** — opt-in components for both CSS and JS (ship only what you use).
+- **ESLint 9** (flat config) + **Prettier**.
+- Multi-page with a zero-dependency HTML partials plugin (shared header/footer).
+
+## Quick start
+
+```bash
 npm install
-npm run start    # gulp dev (build + watcher + BrowserSync)
+npm run dev      # http://localhost:3000
 ```
 
-Other scripts:
-- `npm run build` — production build (`NODE_ENV=production`, minified assets, no sourcemaps).
-- `npm run clean` — remove `dist`.
-- `npm run lint` — ESLint with `--strict-lint`.
+## Scripts
 
-### Development Commands
-- `gulp scriptsJs` — bundle native JavaScript (`src/js`) into `dist/js/script.js`.
-- `gulp scriptsTs` — bundle TypeScript (`src/ts`) into `dist/js/app.js`.
-- `gulp copyJsVendor` / `gulp copyTsVendor` — copy vendor assets without bundling.
-- `gulp styles` / `gulp bootstrapStyles` — build SCSS bundles individually.
+| Command             | What it does                                  |
+| ------------------- | --------------------------------------------- |
+| `npm run dev`       | Start Vite dev server with HMR                 |
+| `npm run build`     | Production build to `dist/`                    |
+| `npm run preview`   | Serve the production build locally             |
+| `npm run typecheck` | `tsc --noEmit`                                 |
+| `npm run lint`      | ESLint over the project                        |
+| `npm run format`    | Prettier write                                 |
 
-Component directories follow `src/css/vendor/bootstrap` for Bootstrap overrides and `src/css/scss` for project sections (core, layout, components).
+## Structure
 
-### Structure
-- `src/css/scss` — project styles, entry point `style.scss`.
-- `src/css/vendor/bootstrap` — Bootstrap SCSS overrides and component list.
-- `src/js` — native JS modules, main entry `main.js`, vendor assets in `src/js/vendor`.
-- `src/ts` — TypeScript modules exported via `modules/index.ts`, main entry `main.ts`.
-- `dist/` — build output (HTML, CSS, JS, images, fonts, vendor assets).
+```
+.
+├── index.html            # entry pages live at the project root
+├── pages.html
+├── typology.html
+├── public/               # copied as-is to the site root (favicon, fonts, ...)
+├── src/
+│   ├── main.ts           # app entry: imports styles, Bootstrap JS, modules
+│   ├── partials/         # shared HTML fragments (header, footer)
+│   ├── scripts/
+│   │   ├── bootstrap.ts  # toggle Bootstrap JS plugins here
+│   │   └── modules/      # your TS modules (menu, smooth scroll, ...)
+│   └── styles/
+│       ├── main.scss     # style entry (@use graph)
+│       ├── abstracts/    # variables, mixins (no CSS output)
+│       ├── base/         # reset, fonts, helpers
+│       ├── layout/       # header, footer
+│       └── vendor/bootstrap/
+│           ├── _index.scss       # Bootstrap import chain (required parts)
+│           ├── _components.scss   # toggle Bootstrap CSS components
+│           └── _variables.scss    # Bootstrap overrides
+├── vite.config.ts
+└── eslint.config.js
+```
 
-### Highlights
-- Bootstrap flexibility: keep a separate bundle (`dist/css/vendor/bootstrap/bootstrap.css`) or import into `style.scss`.
-- Unified JS/TS bundling through esbuild (IIFE targets, minification in production).
-- Environment-specific paths and BrowserSync settings configured via `.env` (see `env.example`). When `BS_USE_PROXY=true`, open the site through the BrowserSync address (for example, `http://newprojectpack.local:3000`) to keep live reload working.
-- Gulp-notify + plumber keep tasks resilient.
-- `gulp-imagemin` optimizes images during builds.
+## Enabling only the Bootstrap you need
 
-Edit `src`, run `npm run start`, and develop with live reload out of the box.
+**CSS** — comment/uncomment components in `src/styles/vendor/bootstrap/_components.scss`. Required base parts (reboot, type, containers, forms, buttons, utilities API) live in `_index.scss`. Override Bootstrap variables in `_variables.scss`. To drop Bootstrap entirely, remove `@use 'vendor/bootstrap';` from `src/styles/main.scss`.
+
+**JS** — enable plugins in `src/scripts/bootstrap.ts`. Each import registers that plugin's `data-bs-*` API; unused plugins are tree-shaken out of the bundle.
+
+## HTML partials & multi-page
+
+Inline a shared fragment anywhere in an HTML page:
+
+```html
+<!-- @include src/partials/header.html -->
+```
+
+Includes resolve from the project root and expand recursively (see the tiny plugin in `vite.config.ts`). Add a new page by creating `some-page.html` at the root and registering it in `vite.config.ts` under `build.rollupOptions.input`.
+
+## Static assets
+
+Put files that must be served verbatim (favicons, web fonts, robots.txt) in `public/`; they land at the site root. Import images/fonts from `src/` to let Vite hash and optimize them.
