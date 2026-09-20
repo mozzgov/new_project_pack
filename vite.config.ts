@@ -37,6 +37,13 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000
+    // Developing against a backend? Keep HMR here on :3000 and forward API
+    // calls to your backend so the frontend stays live while data comes from
+    // the backend. Adjust the path prefix and target to match your server:
+    //
+    // proxy: {
+    //   '/api': { target: 'http://localhost:8080', changeOrigin: true }
+    // }
   },
   preview: {
     host: true,
@@ -45,6 +52,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    // Uncomment when the backend renders HTML and injects hashed assets from
+    // dist/.vite/manifest.json (Vite "Backend Integration").
+    // manifest: true,
     rollupOptions: {
       input: {
         main: resolve(root, 'index.html'),
