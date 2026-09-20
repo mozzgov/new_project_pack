@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fafafa" />
+    <meta name="description" content="{{description}}" />
+    <link rel="icon" href="/img/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png" />
+    <!-- Vendor CSS: verbatim from src/css/vendor -> dist/css/vendor (not processed by Vite) -->
+    <link rel="stylesheet" href="/css/vendor/vendor-theme.css" />
+    <title>{{title}}</title>
+  </head>
+  <body>
+    {{> header }}
+
+    {{> @partial-block }}
+
+    {{> footer }}
+  </body>
+</html>

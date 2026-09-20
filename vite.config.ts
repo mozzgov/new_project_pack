@@ -1,60 +1,153 @@
 import { defineConfig, type Plugin } from 'vite';
-import { readFileSync, existsSync, readdirSync, statSync, createReadStream } from 'node:fs';
-import { resolve, dirname, join, relative, sep, extname } from 'node:path';
+import {
+  readFileSync,
+  existsSync,
+  readdirSync,
+  statSync,
+  createReadStream
+} from 'node:fs';
+import { resolve, dirname, join, relative, sep, extname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import Handlebars from 'handlebars';
+import sharp from 'sharp';
+import { optimize as svgoOptimize } from 'svgo';
+import { site, pages as pageData } from './src/data/site.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 
 /**
- * Minimal HTML partials plugin (zero extra deps).
- * Inline a file with:  <!-- @include src/partials/header.html -->
- * Includes are resolved from the project root and expanded recursively.
+ * Handlebars templating plugin (multi-page, layout + partials + per-page data).
+ *
+ * - Registers every `src/partials/*.hbs` file as a partial (by base name), so
+ *   pages reference them with `{{> header }}`, `{{> footer }}`, and wrap their
+ *   body in the shared layout via `{{#> layout}} ... {{/layout}}`.
+ * - Compiles each HTML entry with `{ ...site, ...pageData[<file>] }` so
+ *   per-page `title`/`description` land in <head> and shared data (e.g. the
+ *   `nav` array rendered with `{{#each}}`) is available everywhere.
+ * - Runs in dev (`transformIndexHtml`) and in build with the same context, so
+ *   the rendered markup is identical. Partials are re-read on every transform
+ *   so edits show up live in dev without a restart.
+ *
+ * Page data lives in `src/data/site.js`. Add a page by creating the HTML entry,
+ * registering it in `build.rollupOptions.input`, and adding a `pages` entry.
  */
-function htmlPartials(): Plugin {
-  const includeRe = /<!--\s*@include\s+([^\s]+)\s*-->/g;
+function htmlTemplating(): Plugin {
+  const partialsDir = resolve(root, 'src/partials');
 
-  const expand = (html: string, seen: Set<string>): string =>
-    html.replace(includeRe, (_match, file: string) => {
-      const filePath = resolve(root, file);
-      if (seen.has(filePath)) {
-        throw new Error(`[html-partials] circular include: ${file}`);
+  const registerPartials = () => {
+    if (!existsSync(partialsDir)) {
+      return;
+    }
+    for (const entry of readdirSync(partialsDir)) {
+      if (extname(entry) !== '.hbs') {
+        continue;
       }
-      const nested = new Set(seen).add(filePath);
-      return expand(readFileSync(filePath, 'utf8'), nested);
-    });
+      const name = basename(entry, '.hbs');
+      Handlebars.registerPartial(name, readFileSync(join(partialsDir, entry), 'utf8'));
+    }
+  };
+
+  const render = (html: string, filename: string): string => {
+    registerPartials();
+    const key = basename(filename);
+    const perPage = (pageData as Record<string, Record<string, unknown>>)[key] ?? {};
+    const context = { ...site, ...perPage };
+    return Handlebars.compile(html)(context);
+  };
 
   return {
-    name: 'html-partials',
+    name: 'html-templating',
     transformIndexHtml: {
       order: 'pre',
-      handler: (html) => expand(html, new Set<string>())
+      handler: (html, ctx) => render(html, ctx.filename)
     }
   };
 }
 
 /**
- * Verbatim vendor assets plugin (zero extra deps).
+ * Verbatim static assets plugin (with optional image optimization).
  *
- * Ships hand-written / third-party files from `src/css/vendor/**` and
- * `src/js/vendor/**` unchanged (unbundled, unhashed) to the same public URLs
- * in both dev and build:
- *   src/css/vendor/<path> -> /css/vendor/<path>  (dist/css/vendor/<path>)
- *   src/js/vendor/<path>  -> /js/vendor/<path>   (dist/js/vendor/<path>)
+ * Ships hand-written / third-party files unchanged (unbundled, unhashed) to the
+ * same public URLs in both dev and build, for all of:
+ *   src/css/vendor/<p> -> /css/vendor/<p>  (dist/css/vendor/<p>)
+ *   src/js/vendor/<p>  -> /js/vendor/<p>   (dist/js/vendor/<p>)
+ *   src/img/<p>        -> /img/<p>         (dist/img/<p>)
+ *   src/fonts/<p>      -> /fonts/<p>       (dist/fonts/<p>)
  *
- * Using an explicit `fileName` in emitFile bypasses `assetFileNames`, so the
- * files keep their exact paths (no hashing) in the default and `wp` modes.
+ * Using an explicit `fileName` in emitFile bypasses `assetFileNames`, so files
+ * keep their exact paths (no hashing) in the default and `wp` modes.
+ *
+ * Images under `src/img` are optimized before emit (raster via `sharp`, SVG via
+ * `svgo`) unless `optimizeImages` is disabled. Optimization never runs in dev,
+ * so HMR stays fast; dev serves the source bytes verbatim.
  */
-function srcVendor(): Plugin {
-  // Map of URL prefix -> absolute source directory.
-  const dirs: Array<{ urlPrefix: string; absDir: string }> = [
+function srcStatic(options: { optimizeImages?: boolean } = {}): Plugin {
+  const { optimizeImages = true } = options;
+
+  // Map of URL prefix -> absolute source directory. `optimize: true` marks the
+  // directory whose images get run through sharp/svgo on build.
+  const dirs: Array<{ urlPrefix: string; absDir: string; optimize?: boolean }> = [
     { urlPrefix: 'css/vendor', absDir: resolve(root, 'src/css/vendor') },
-    { urlPrefix: 'js/vendor', absDir: resolve(root, 'src/js/vendor') }
+    { urlPrefix: 'js/vendor', absDir: resolve(root, 'src/js/vendor') },
+    { urlPrefix: 'img', absDir: resolve(root, 'src/img'), optimize: true },
+    { urlPrefix: 'fonts', absDir: resolve(root, 'src/fonts') }
   ];
 
   const contentTypes: Record<string, string> = {
     '.css': 'text/css',
     '.js': 'text/javascript',
-    '.mjs': 'text/javascript'
+    '.mjs': 'text/javascript',
+    // Images
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.svg': 'image/svg+xml',
+    '.webp': 'image/webp',
+    '.avif': 'image/avif',
+    '.ico': 'image/x-icon',
+    // Fonts
+    '.woff': 'font/woff',
+    '.woff2': 'font/woff2',
+    '.ttf': 'font/ttf',
+    '.otf': 'font/otf',
+    '.eot': 'application/vnd.ms-fontobject'
+  };
+
+  const rasterExts = new Set(['.png', '.jpg', '.jpeg', '.webp', '.avif']);
+
+  const optimizeAsset = async (abs: string): Promise<Buffer> => {
+    const source = readFileSync(abs);
+    if (!optimizeImages) {
+      return source;
+    }
+    const ext = extname(abs).toLowerCase();
+    try {
+      if (rasterExts.has(ext)) {
+        let pipeline = sharp(source);
+        if (ext === '.png') {
+          pipeline = pipeline.png({ compressionLevel: 9, palette: true });
+        } else if (ext === '.jpg' || ext === '.jpeg') {
+          pipeline = pipeline.jpeg({ quality: 80, mozjpeg: true });
+        } else if (ext === '.webp') {
+          pipeline = pipeline.webp({ quality: 80 });
+        } else if (ext === '.avif') {
+          pipeline = pipeline.avif({ quality: 50 });
+        }
+        const out = await pipeline.toBuffer();
+        // Never regress: keep the smaller of the two.
+        return out.length < source.length ? out : source;
+      }
+      if (ext === '.svg') {
+        const result = svgoOptimize(source.toString('utf8'), { multipass: true });
+        const out = Buffer.from(result.data, 'utf8');
+        return out.length < source.length ? out : source;
+      }
+    } catch {
+      // On any optimizer error, fall back to the original bytes.
+      return source;
+    }
+    return source;
   };
 
   const walk = (dir: string): string[] => {
@@ -71,20 +164,24 @@ function srcVendor(): Plugin {
   };
 
   return {
-    name: 'src-vendor',
-    generateBundle() {
-      for (const { urlPrefix, absDir } of dirs) {
+    name: 'src-static',
+    async generateBundle() {
+      for (const { urlPrefix, absDir, optimize } of dirs) {
         if (!existsSync(absDir)) {
           continue;
         }
-        for (const abs of walk(absDir)) {
-          const rel = relative(absDir, abs).split(sep).join('/');
-          this.emitFile({
-            type: 'asset',
-            fileName: `${urlPrefix}/${rel}`,
-            source: readFileSync(abs)
-          });
-        }
+        const files = walk(absDir);
+        await Promise.all(
+          files.map(async (abs) => {
+            const rel = relative(absDir, abs).split(sep).join('/');
+            const source = optimize ? await optimizeAsset(abs) : readFileSync(abs);
+            this.emitFile({
+              type: 'asset',
+              fileName: `${urlPrefix}/${rel}`,
+              source
+            });
+          })
+        );
       }
     },
     configureServer(server) {
@@ -138,7 +235,10 @@ export default defineConfig(({ mode }) => {
   };
 
   return {
-    plugins: [htmlPartials(), srcVendor()],
+    // Static assets are served from src/ via the srcStatic() plugin below, so
+    // there is no top-level public/ directory to copy.
+    publicDir: false,
+    plugins: [htmlTemplating(), srcStatic()],
     server: {
       host: true,
       port: 3000
@@ -157,6 +257,11 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
       sourcemap: true,
+      // Default builds stay readable (non-minified) for easy inspection and
+      // debugging. Minify any build by appending the CLI flag, e.g.
+      // `npm run build:min` or `npm run build:wp -- --minify esbuild`. The CLI
+      // flag overrides this default.
+      minify: false,
       // Uncomment when the backend renders HTML and injects hashed assets from
       // dist/.vite/manifest.json (Vite "Backend Integration").
       // manifest: true,

@@ -1,14 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <title>Typology — Frontend Starter</title>
-  </head>
-  <body>
-    <!-- @include src/partials/header.html -->
-
+{{#> layout}}
     <div class="main-container">
       <div class="container py-4 px-3 mx-auto">
         <h1>Heading 1</h1>
@@ -32,8 +22,5 @@
       </div>
     </div>
 
-    <!-- @include src/partials/footer.html -->
-
     <script type="module" src="/src/main.ts"></script>
-  </body>
-</html>
+{{/layout}}

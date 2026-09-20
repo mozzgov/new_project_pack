@@ -1,30 +1,18 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <title>Pages — Frontend Starter</title>
-  </head>
-  <body>
-    <!-- @include src/partials/header.html -->
-
+{{#> layout}}
     <div class="main-container">
       <div class="container py-4 px-3 mx-auto">
         <h1>Pages</h1>
         <p class="text-muted">
           This page is powered by a <strong>native JS entry</strong> (<code>src/pages.js</code>), not
-          TypeScript. Add more pages by dropping an <code>*.html</code> file in the project root and
-          registering it in <code>vite.config.ts</code> (<code>build.rollupOptions.input</code>).
+          TypeScript. Add more pages by dropping an <code>*.html</code> file in the project root,
+          registering it in <code>vite.config.ts</code> (<code>build.rollupOptions.input</code>), and
+          adding its <code>title</code>/<code>description</code> to <code>src/data/site.js</code>.
         </p>
         <div class="mb-3"><span id="native-note"></span></div>
         <a class="btn btn-outline-primary" href="/index.html">Back home</a>
       </div>
     </div>
 
-    <!-- @include src/partials/footer.html -->
-
     <!-- Native JS entry (no TypeScript) -->
     <script type="module" src="/src/pages.js"></script>
-  </body>
-</html>
+{{/layout}}
