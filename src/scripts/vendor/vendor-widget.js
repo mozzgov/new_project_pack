@@ -1,4 +1,4 @@
-/* External/vendor JS served verbatim from src/js/vendor -> dist/js/vendor.
+/* External/vendor JS served verbatim from src/scripts/vendor -> dist/js/vendor.
    Classic (non-module) script, not bundled or transpiled by Vite.
    Reference it directly in HTML:
    <script src="/js/vendor/vendor-widget.js" defer></script> */

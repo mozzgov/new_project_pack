@@ -68,11 +68,17 @@ function htmlTemplating(): Plugin {
  * Verbatim static assets plugin (with optional image optimization).
  *
  * Ships hand-written / third-party files unchanged (unbundled, unhashed) to the
- * same public URLs in both dev and build, for all of:
- *   src/css/vendor/<p> -> /css/vendor/<p>  (dist/css/vendor/<p>)
- *   src/js/vendor/<p>  -> /js/vendor/<p>   (dist/js/vendor/<p>)
- *   src/img/<p>        -> /img/<p>         (dist/img/<p>)
- *   src/fonts/<p>      -> /fonts/<p>       (dist/fonts/<p>)
+ * given public URLs in both dev and build. Source dir and output URL are
+ * decoupled, so vendor sources live alongside their siblings while still being
+ * served/emitted under /css/vendor and /js/vendor:
+ *   src/styles/vendor/<p>  -> /css/vendor/<p>  (dist/css/vendor/<p>)  [skips .scss/.sass]
+ *   src/scripts/vendor/<p> -> /js/vendor/<p>   (dist/js/vendor/<p>)   [skips .ts]
+ *   src/img/<p>            -> /img/<p>          (dist/img/<p>)
+ *   src/fonts/<p>          -> /fonts/<p>         (dist/fonts/<p>)
+ *
+ * `skipExts` excludes source-only files (e.g. the Bootstrap SCSS partials in
+ * src/styles/vendor/bootstrap, or TypeScript in src/scripts/vendor) so only
+ * real assets are copied verbatim.
  *
  * Using an explicit `fileName` in emitFile bypasses `assetFileNames`, so files
  * keep their exact paths (no hashing) in the default and `wp` modes.
@@ -84,11 +90,25 @@ function htmlTemplating(): Plugin {
 function srcStatic(options: { optimizeImages?: boolean } = {}): Plugin {
   const { optimizeImages = true } = options;
 
-  // Map of URL prefix -> absolute source directory. `optimize: true` marks the
-  // directory whose images get run through sharp/svgo on build.
-  const dirs: Array<{ urlPrefix: string; absDir: string; optimize?: boolean }> = [
-    { urlPrefix: 'css/vendor', absDir: resolve(root, 'src/css/vendor') },
-    { urlPrefix: 'js/vendor', absDir: resolve(root, 'src/js/vendor') },
+  // URL prefix -> absolute source directory (decoupled). `optimize: true` marks
+  // the directory whose images get run through sharp/svgo on build. `skipExts`
+  // lists source-only extensions that must NOT be copied verbatim.
+  const dirs: Array<{
+    urlPrefix: string;
+    absDir: string;
+    optimize?: boolean;
+    skipExts?: Set<string>;
+  }> = [
+    {
+      urlPrefix: 'css/vendor',
+      absDir: resolve(root, 'src/styles/vendor'),
+      skipExts: new Set(['.scss', '.sass'])
+    },
+    {
+      urlPrefix: 'js/vendor',
+      absDir: resolve(root, 'src/scripts/vendor'),
+      skipExts: new Set(['.ts'])
+    },
     { urlPrefix: 'img', absDir: resolve(root, 'src/img'), optimize: true },
     { urlPrefix: 'fonts', absDir: resolve(root, 'src/fonts') }
   ];
@@ -166,11 +186,13 @@ function srcStatic(options: { optimizeImages?: boolean } = {}): Plugin {
   return {
     name: 'src-static',
     async generateBundle() {
-      for (const { urlPrefix, absDir, optimize } of dirs) {
+      for (const { urlPrefix, absDir, optimize, skipExts } of dirs) {
         if (!existsSync(absDir)) {
           continue;
         }
-        const files = walk(absDir);
+        const files = walk(absDir).filter(
+          (abs) => !skipExts?.has(extname(abs).toLowerCase())
+        );
         await Promise.all(
           files.map(async (abs) => {
             const rel = relative(absDir, abs).split(sep).join('/');
@@ -203,6 +225,10 @@ function srcStatic(options: { optimizeImages?: boolean } = {}): Plugin {
         if (abs !== match.absDir && !abs.startsWith(match.absDir + sep)) {
           return next();
         }
+        // Never serve source-only files (e.g. .scss/.sass, .ts) verbatim.
+        if (match.skipExts?.has(extname(abs).toLowerCase())) {
+          return next();
+        }
         if (!existsSync(abs) || !statSync(abs).isFile()) {
           return next();
         }
@@ -218,7 +244,7 @@ function srcStatic(options: { optimizeImages?: boolean } = {}): Plugin {
 
 export default defineConfig(({ mode }) => {
   // `--mode wp`: emit stable (non-hashed) filenames so a CMS/WordPress theme
-  // can enqueue fixed paths (dist/assets/main.js, main.css, ...) that don't
+  // can enqueue fixed paths (dist/js/main.js, dist/css/main.css, ...) that don't
   // change on every rebuild. Default build keeps content hashes for caching.
   const isCms = mode === 'wp';
   const input: Record<string, string> = isCms
@@ -228,10 +254,24 @@ export default defineConfig(({ mode }) => {
         pages: resolve(root, 'pages.html'),
         typology: resolve(root, 'typology.html')
       };
-  const stableNames = {
-    entryFileNames: 'assets/[name].js',
-    chunkFileNames: 'assets/[name].js',
-    assetFileNames: 'assets/[name][extname]'
+
+  // Route bundled emitted assets into type-specific folders (js/, css/, img/,
+  // fonts/) instead of a single assets/ dir. `hashed` toggles the content hash
+  // between the default (cache-friendly) and wp (stable path) builds. Verbatim
+  // srcStatic() emits use explicit fileNames and are unaffected by this.
+  const routeAssetFileName = (name: string, hashed: boolean): string => {
+    const suffix = hashed ? '-[hash]' : '';
+    const lower = name.toLowerCase();
+    if (lower.endsWith('.css')) {
+      return `css/[name]${suffix}[extname]`;
+    }
+    if (/\.(png|jpe?g|gif|svg|webp|avif|ico)$/.test(lower)) {
+      return `img/[name]${suffix}[extname]`;
+    }
+    if (/\.(woff2?|ttf|otf|eot)$/.test(lower)) {
+      return `fonts/[name]${suffix}[extname]`;
+    }
+    return `assets/[name]${suffix}[extname]`;
   };
 
   return {
@@ -267,10 +307,20 @@ export default defineConfig(({ mode }) => {
       // manifest: true,
       rollupOptions: {
         // CMS/WordPress: build a single JS entry (src/main.ts) into predictable
-        // dist/assets/main.js + main.css that the theme enqueues. Otherwise build
-        // the multi-page static site from the HTML entries.
+        // dist/js/main.js + dist/css/main.css that the theme enqueues. Otherwise
+        // build the multi-page static site from the HTML entries.
         input,
-        output: isCms ? stableNames : undefined
+        output: isCms
+          ? {
+              entryFileNames: 'js/[name].js',
+              chunkFileNames: 'js/[name].js',
+              assetFileNames: (info) => routeAssetFileName(info.names?.[0] ?? '', false)
+            }
+          : {
+              entryFileNames: 'js/[name]-[hash].js',
+              chunkFileNames: 'js/[name]-[hash].js',
+              assetFileNames: (info) => routeAssetFileName(info.names?.[0] ?? '', true)
+            }
       }
     },
     css: {

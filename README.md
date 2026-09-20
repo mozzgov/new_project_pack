@@ -48,25 +48,41 @@ npm run dev      # http://localhost:3000
 │   ├── img/              # images -> dist/img (optimized + verbatim copy)
 │   │   └── favicon/       # favicon.ico, favicon-32x32.png
 │   ├── fonts/            # web fonts -> dist/fonts (verbatim copy)
-│   ├── css/vendor/       # verbatim external CSS -> dist/css/vendor
-│   ├── js/vendor/        # verbatim external JS  -> dist/js/vendor
 │   ├── scripts/
 │   │   ├── bootstrap.ts  # toggle Bootstrap JS plugins here
 │   │   ├── native/       # plain native JS modules (bundled)
-│   │   └── modules/      # your TS modules (menu, smooth scroll, ...)
+│   │   ├── modules/      # your TS modules (menu, smooth scroll, ...)
+│   │   └── vendor/       # verbatim external JS -> dist/js/vendor (skips .ts)
 │   └── styles/
 │       ├── main.scss     # SCSS entry (@use graph)
 │       ├── custom.css    # plain CSS example (bundled)
 │       ├── abstracts/    # variables, mixins (no CSS output)
 │       ├── base/         # reset, fonts, helpers
 │       ├── layout/       # header, footer
-│       └── vendor/bootstrap/
-│           ├── _index.scss       # Bootstrap import chain (required parts)
-│           ├── _components.scss   # toggle Bootstrap CSS components
-│           └── _variables.scss    # Bootstrap overrides
+│       └── vendor/
+│           ├── vendor-theme.css   # verbatim external CSS -> dist/css/vendor
+│           └── bootstrap/         # Bootstrap SCSS (compiled, NOT copied verbatim)
+│               ├── _index.scss       # Bootstrap import chain (required parts)
+│               ├── _components.scss   # toggle Bootstrap CSS components
+│               └── _variables.scss    # Bootstrap overrides
 ├── postcss.config.js     # autoprefixer (uses package.json "browserslist")
 ├── vite.config.ts
 └── eslint.config.js
+```
+
+The production build in `dist/` is grouped by type — bundled JS in `js/`, bundled
+CSS in `css/`, verbatim vendor assets in `css/vendor/` and `js/vendor/`, images in
+`img/`, fonts in `fonts/` (there is **no `assets/` folder for JS/CSS**):
+
+```
+dist/
+├── index.html · pages.html · typology.html
+├── js/          # bundled entries + chunks (js/[name]-[hash].js)
+│   └── vendor/   # verbatim external JS (from src/scripts/vendor)
+├── css/         # bundled stylesheet (css/[name]-[hash].css)
+│   └── vendor/   # verbatim external CSS (from src/styles/vendor)
+├── img/         # optimized + verbatim images
+└── fonts/       # web fonts
 ```
 
 ## Enabling only the Bootstrap you need
@@ -136,12 +152,14 @@ import { mountGreeting } from './scripts/native/greeting.js'; // native JS from 
 
 There is **no `public/` directory** (`publicDir: false`). Instead, the zero-config `srcStatic()` plugin in `vite.config.ts` copies whole trees verbatim (unbundled, unhashed) to fixed URLs and serves them at the same paths in dev — in both the default and `wp` builds:
 
-| Source           | Output / URL       | Notes                              |
-| ---------------- | ------------------ | ---------------------------------- |
-| `src/img/`       | `/img/…`           | raster optimized via `sharp`, SVG via `svgo` |
-| `src/fonts/`     | `/fonts/…`         | verbatim (see fonts below)         |
-| `src/css/vendor/`| `/css/vendor/…`    | verbatim                           |
-| `src/js/vendor/` | `/js/vendor/…`     | verbatim                           |
+| Source                | Output / URL       | Notes                              |
+| --------------------- | ------------------ | ---------------------------------- |
+| `src/img/`            | `/img/…`           | raster optimized via `sharp`, SVG via `svgo` |
+| `src/fonts/`          | `/fonts/…`         | verbatim (see fonts below)         |
+| `src/styles/vendor/`  | `/css/vendor/…`    | verbatim CSS (skips `.scss`/`.sass`, so Bootstrap partials stay source-only) |
+| `src/scripts/vendor/` | `/js/vendor/…`     | verbatim JS (skips `.ts`)          |
+
+Source dir and output URL are decoupled: vendor sources live next to their siblings (`src/styles/vendor`, `src/scripts/vendor`) but are still emitted/served under `/css/vendor` and `/js/vendor`.
 
 Reference them by absolute path in HTML:
 
@@ -171,7 +189,7 @@ For production (e.g. a WordPress theme), prefer the minified variant. The `--min
 
 ## Use inside a WordPress / CMS theme
 
-When the site is rendered by a backend (WordPress, etc.) that enqueues the built assets from the theme's `dist/`, use the **`wp` mode**. It builds a single, predictable entry — `dist/assets/main.js` + `dist/assets/main.css` (no content hashes, no HTML) — so your `functions.php` can reference fixed paths that don't change on every rebuild.
+When the site is rendered by a backend (WordPress, etc.) that enqueues the built assets from the theme's `dist/`, use the **`wp` mode**. It builds a single, predictable entry — `dist/js/main.js` + `dist/css/main.css` (no content hashes, no HTML) — so your `functions.php` can reference fixed paths that don't change on every rebuild.
 
 Develop with auto-rebuild into `dist/`, then just refresh the page (e.g. `testsite.local/catalog/`):
 
@@ -184,14 +202,14 @@ npm run build:wp    # one-off build for the theme (append --minify esbuild for p
 
 ```php
 add_action('wp_enqueue_scripts', function () {
-    $dir = get_template_directory() . '/dist/assets';
-    $uri = get_template_directory_uri() . '/dist/assets';
+    $dir = get_template_directory() . '/dist';
+    $uri = get_template_directory_uri() . '/dist';
 
-    wp_enqueue_style('theme-main', "$uri/main.css", [],
-        file_exists("$dir/main.css") ? filemtime("$dir/main.css") : null);
+    wp_enqueue_style('theme-main', "$uri/css/main.css", [],
+        file_exists("$dir/css/main.css") ? filemtime("$dir/css/main.css") : null);
 
-    wp_enqueue_script('theme-main', "$uri/main.js", [],
-        file_exists("$dir/main.js") ? filemtime("$dir/main.js") : null, true);
+    wp_enqueue_script('theme-main', "$uri/js/main.js", [],
+        file_exists("$dir/js/main.js") ? filemtime("$dir/js/main.js") : null, true);
 });
 
 // main.js is an ES module — emit type="module".
@@ -202,4 +220,4 @@ add_filter('script_loader_tag', function ($tag, $handle, $src) {
 }, 10, 3);
 ```
 
-Verbatim static files (`src/img`, `src/fonts`, `src/css/vendor`, `src/js/vendor` → `dist/img`, `dist/fonts`, `dist/css/vendor`, `dist/js/vendor`) still land in `dist/` and are referenced by absolute theme path. If you'd rather keep Vite's HMR instead of refreshing, use the "Backend Integration" note in `vite.config.ts` (`manifest: true`) and point the theme at `http://localhost:3000/@vite/client` during dev.
+Verbatim static files (`src/img`, `src/fonts`, `src/styles/vendor`, `src/scripts/vendor` → `dist/img`, `dist/fonts`, `dist/css/vendor`, `dist/js/vendor`) still land in `dist/` and are referenced by absolute theme path. If you'd rather keep Vite's HMR instead of refreshing, use the "Backend Integration" note in `vite.config.ts` (`manifest: true`) and point the theme at `http://localhost:3000/@vite/client` during dev.
