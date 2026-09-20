@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   // Vendor/verbatim assets are third-party — don't lint them (incl. src/**/vendor/**).
-  { ignores: ['dist', 'node_modules', 'public', '**/vendor/**'] },
+  { ignores: ['dist', 'node_modules', '**/vendor/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -25,7 +25,7 @@ export default tseslint.config(
   },
   {
     // Node-side config files
-    files: ['vite.config.ts', 'eslint.config.js'],
+    files: ['vite.config.ts', 'eslint.config.js', 'postcss.config.js'],
     languageOptions: {
       globals: { ...globals.node }
     }
