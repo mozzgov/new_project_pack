@@ -1,0 +1,14 @@
+{
+  "name": "New Project Starter (Gulp)",
+  "install": "npm ci && mkdir -p src/js/vendor src/ts/vendor",
+  "terminals": [
+    {
+      "name": "dev",
+      "command": "npm run start"
+    }
+  ],
+  "ports": [
+    { "name": "dev server", "port": 3000 },
+    { "name": "browsersync ui", "port": 3001 }
+  ]
+}
