@@ -3,8 +3,8 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  // Vendor/verbatim assets in public/ are third-party — don't lint them.
-  { ignores: ['dist', 'node_modules', 'public'] },
+  // Vendor/verbatim assets are third-party — don't lint them (incl. src/**/vendor/**).
+  { ignores: ['dist', 'node_modules', 'public', '**/vendor/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

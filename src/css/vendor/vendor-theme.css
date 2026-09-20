@@ -1,6 +1,6 @@
-/* External/vendor CSS served verbatim from /vendor (public/ -> dist/).
+/* External/vendor CSS served verbatim from src/css/vendor -> dist/css/vendor.
    Not processed or hashed by Vite. Reference it directly in HTML:
-   <link rel="stylesheet" href="/vendor/css/vendor-theme.css" /> */
+   <link rel="stylesheet" href="/css/vendor/vendor-theme.css" /> */
 
 .vendor-badge {
   display: inline-block;

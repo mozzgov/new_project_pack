@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#fafafa" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <!-- Vendor CSS: verbatim from public/vendor -> dist/vendor (not processed by Vite) -->
-    <link rel="stylesheet" href="/vendor/css/vendor-theme.css" />
+    <!-- Vendor CSS: verbatim from src/css/vendor -> dist/css/vendor (not processed by Vite) -->
+    <link rel="stylesheet" href="/css/vendor/vendor-theme.css" />
     <title>Frontend Starter</title>
   </head>
   <body>
@@ -21,7 +21,7 @@
         <div class="mt-3 d-flex flex-column gap-2 align-items-start">
           <!-- Filled by bundled native JS (src/scripts/native/greeting.js), styled by plain CSS -->
           <span id="native-note"></span>
-          <!-- Filled by verbatim vendor JS (public/vendor/js/vendor-widget.js), styled by vendor CSS -->
+          <!-- Filled by verbatim vendor JS (src/js/vendor/vendor-widget.js), styled by vendor CSS -->
           <span id="vendor-widget"></span>
         </div>
       </div>
@@ -97,7 +97,7 @@
 
     <!-- Bundled app (TypeScript entry) -->
     <script type="module" src="/src/main.ts"></script>
-    <!-- Vendor JS: verbatim classic script from /vendor (not bundled) -->
-    <script src="/vendor/js/vendor-widget.js" defer></script>
+    <!-- Vendor JS: verbatim classic script from /js/vendor (not bundled) -->
+    <script src="/js/vendor/vendor-widget.js" defer></script>
   </body>
 </html>

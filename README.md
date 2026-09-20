@@ -38,13 +38,13 @@ npm run dev      # http://localhost:3000
 ├── typology.html
 ├── public/               # copied as-is to the site root
 │   ├── favicon.ico
-│   └── vendor/           # verbatim external assets -> dist/vendor
-│       ├── css/vendor-theme.css
-│       └── js/vendor-widget.js
+│   └── favicon-32x32.png
 ├── src/
 │   ├── main.ts           # TS entry (index.html, typology.html)
 │   ├── pages.js          # native-JS entry (pages.html) — no TypeScript
 │   ├── partials/         # shared HTML fragments (header, footer)
+│   ├── css/vendor/       # verbatim external CSS -> dist/css/vendor
+│   ├── js/vendor/        # verbatim external JS  -> dist/js/vendor
 │   ├── scripts/
 │   │   ├── bootstrap.ts  # toggle Bootstrap JS plugins here
 │   │   ├── native/       # plain native JS modules (bundled)
@@ -98,11 +98,11 @@ import { mountGreeting } from './scripts/native/greeting.js'; // native JS from 
 
 ## Vendor / verbatim assets → dist
 
-Third-party or hand-written files that must ship **as-is** (unbundled, unhashed) go in `public/vendor/`. Everything under `public/` is copied to the site root, so `public/vendor/...` → `dist/vendor/...`. Reference them by absolute path in HTML:
+Third-party or hand-written files that must ship **as-is** (unbundled, unhashed) go in `src/css/vendor/` and `src/js/vendor/`. A tiny zero-dependency plugin (`srcVendor()` in `vite.config.ts`) copies them verbatim to `dist/css/vendor/...` and `dist/js/vendor/...` (preserving subpaths, no hashing) and serves them at the same URLs in dev. This works in both the default and `wp` builds. Reference them by absolute path in HTML:
 
 ```html
-<link rel="stylesheet" href="/vendor/css/vendor-theme.css" />
-<script src="/vendor/js/vendor-widget.js" defer></script>
+<link rel="stylesheet" href="/css/vendor/vendor-theme.css" />
+<script src="/js/vendor/vendor-widget.js" defer></script>
 ```
 
 Use this for classic (non-module) scripts, prebuilt libraries, or any CSS/JS you don't want Vite to touch. Use the bundled paths above (imports from `src/`) when you *do* want hashing, minification and tree-shaking.
@@ -140,8 +140,8 @@ add_filter('script_loader_tag', function ($tag, $handle, $src) {
 }, 10, 3);
 ```
 
-Assets from `public/` (fonts, `vendor/`, favicon) still land in `dist/` and are referenced by absolute theme path. If you'd rather keep Vite's HMR instead of refreshing, use the "Backend Integration" note in `vite.config.ts` (`manifest: true`) and point the theme at `http://localhost:3000/@vite/client` during dev.
+Assets from `public/` (fonts, favicon) and verbatim vendor files (`src/css/vendor`, `src/js/vendor` → `dist/css/vendor`, `dist/js/vendor`) still land in `dist/` and are referenced by absolute theme path. If you'd rather keep Vite's HMR instead of refreshing, use the "Backend Integration" note in `vite.config.ts` (`manifest: true`) and point the theme at `http://localhost:3000/@vite/client` during dev.
 
 ## Static assets
 
-Put files that must be served verbatim (favicons, web fonts, `robots.txt`, `vendor/`) in `public/`; they land at the site root. Import images/fonts from `src/` instead to let Vite hash and optimize them.
+Put files that must be served verbatim (favicons, web fonts, `robots.txt`) in `public/`; they land at the site root. For verbatim CSS/JS use `src/css/vendor` and `src/js/vendor` (see "Vendor / verbatim assets" above). Import images/fonts from `src/` instead to let Vite hash and optimize them.
