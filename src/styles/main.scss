@@ -1,0 +1,11 @@
+// 1. Bootstrap first so project styles below can override it.
+//    Remove this line to build without Bootstrap.
+@use 'vendor/bootstrap';
+
+// 2. Project design system.
+@use 'abstracts/mixins';
+@use 'base/reset';
+@use 'base/fonts';
+@use 'base/helpers';
+@use 'layout/header';
+@use 'layout/footer';

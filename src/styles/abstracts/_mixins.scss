@@ -1,0 +1,119 @@
+@use 'sass:string';
+
+// ---------------------------------------------------------------------------
+// Media query helpers
+// ---------------------------------------------------------------------------
+$screen-sm-min: 576px;
+$screen-md-min: 768px;
+$screen-lg-min: 992px;
+$screen-xl-min: 1200px;
+
+$screen-xxs-max: 375px;
+$screen-xs-max: 575px;
+$screen-sm-max: 767px;
+$screen-md-max: 991px;
+$screen-lg-max: 1199px;
+$screen-xl-max: 1600px;
+
+@mixin min-sm {
+  @media only screen and (min-width: $screen-sm-min) {
+    @content;
+  }
+}
+@mixin min-md {
+  @media only screen and (min-width: $screen-md-min) {
+    @content;
+  }
+}
+@mixin min-lg {
+  @media only screen and (min-width: $screen-lg-min) {
+    @content;
+  }
+}
+@mixin min-xl {
+  @media only screen and (min-width: $screen-xl-min) {
+    @content;
+  }
+}
+
+@mixin max-xxs {
+  @media only screen and (max-width: $screen-xxs-max) {
+    @content;
+  }
+}
+@mixin max-xs {
+  @media only screen and (max-width: $screen-xs-max) {
+    @content;
+  }
+}
+@mixin max-sm {
+  @media only screen and (max-width: $screen-sm-max) {
+    @content;
+  }
+}
+@mixin max-md {
+  @media only screen and (max-width: $screen-md-max) {
+    @content;
+  }
+}
+@mixin max-lg {
+  @media only screen and (max-width: $screen-lg-max) {
+    @content;
+  }
+}
+@mixin max-xl {
+  @media only screen and (max-width: $screen-xl-max) {
+    @content;
+  }
+}
+
+// Arbitrary breakpoints
+@mixin mmin($value) {
+  @media only screen and (min-width: $value) {
+    @content;
+  }
+}
+@mixin mmax($value) {
+  @media only screen and (max-width: $value) {
+    @content;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// @font-face generator
+// ---------------------------------------------------------------------------
+@function str-replace($string, $search, $replace: '') {
+  $index: string.index($string, $search);
+
+  @if $index {
+    @return string.slice($string, 1, $index - 1) + $replace +
+      str-replace(string.slice($string, $index + string.length($search)), $search, $replace);
+  }
+
+  @return $string;
+}
+
+@mixin font-face($name, $path, $weight: null, $style: null, $exts: woff2 woff) {
+  $src: null;
+  $extmods: (
+    eot: '?',
+    svg: '#' + str-replace($name, ' ', '_')
+  );
+  $formats: (
+    otf: 'opentype',
+    ttf: 'truetype'
+  );
+
+  @each $ext in $exts {
+    $extmod: if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext);
+    $format: if(map-has-key($formats, $ext), map-get($formats, $ext), $ext);
+    $src: append($src, url(quote($path + '.' + $extmod)) format(quote($format)), comma);
+  }
+
+  @font-face {
+    font-family: quote($name);
+    font-style: $style;
+    font-weight: $weight;
+    src: $src;
+  }
+}

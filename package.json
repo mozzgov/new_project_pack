@@ -1,47 +1,32 @@
 {
-  "name": "new_project",
-  "version": "1.0.0",
-  "description": "start pack for project",
-  "main": "index.js",
-  "scripts": {
-    "clean": "gulp clean",
-    "lint": "gulp lint --strict-lint",
-    "build": "gulp build",
-    "dev": "gulp dev",
-    "start": "npm run dev"
-  },
+  "name": "frontend-starter",
+  "version": "2.0.0",
+  "description": "Lightweight Vite + TypeScript + SCSS + Bootstrap frontend starter",
+  "type": "module",
+  "private": true,
   "author": "Maxim Mozzgov",
   "license": "ISC",
-  "devDependencies": {
-    "@types/jquery": "^3.5.33",
-    "bootstrap": "^5.3.8",
-    "gulp": "^5.0.1",
-    "browser-sync": "^3.0.4",
-    "dotenv": "^16.4.5",
-    "eslint": "^9.11.1",
-    "fancy-log": "^2.0.0",
-    "gulp-autoprefixer": "^9.0.0",
-    "gulp-cssbeautify": "^3.0.1",
-    "gulp-group-css-media-queries": "^1.2.2",
-    "gulp-imagemin": "^9.1.0",
-    "gulp-if": "^3.0.0",
-    "gulp-notify": "^4.0.0",
-    "gulp-plumber": "^1.2.1",
-    "gulp-rigger": "^0.5.8",
-    "gulp-sass": "^6.0.1",
-    "gulp-sourcemaps": "^3.0.0",
-    "esbuild": "^0.28.1",
-    "jquery": "^3.7.1",
-    "@typescript-eslint/eslint-plugin": "^8.11.0",
-    "@typescript-eslint/parser": "^8.11.0",
-    "sass": "1.78.0",
-    "scss-resets": "^0.5.2",
-    "tslib": "^2.8.1",
-    "typescript": "^5.9.3"
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
-  "browserslist": [
-    ">0.5%",
-    "last 2 versions",
-    "not dead"
-  ]
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^22.10.0",
+    "eslint": "^9.39.5",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "sass-embedded": "^1.104.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.0",
+    "vite": "^8.3.0"
+  }
 }

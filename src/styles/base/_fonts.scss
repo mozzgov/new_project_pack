@@ -1,0 +1,7 @@
+@use '../abstracts/mixins' as mixin;
+
+// Drop your web fonts in `public/fonts/` and register them here.
+// Paths are resolved from the built CSS, so `/fonts/...` points at `public/fonts/`.
+//
+// Example:
+//   @include mixin.font-face('Univers', '/fonts/univers', 400, normal, woff2 woff);

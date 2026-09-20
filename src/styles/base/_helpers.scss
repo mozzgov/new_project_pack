@@ -1,0 +1,158 @@
+@use '../abstracts/mixins' as mixin;
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+.wrapper {
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+  position: relative;
+  width: 1200px;
+
+  @include mixin.max-lg {
+    width: 990px;
+  }
+  @include mixin.max-md {
+    width: 768px;
+  }
+  @include mixin.max-sm {
+    width: 100%;
+  }
+}
+
+.no_margin {
+  margin: 0;
+}
+
+.flex_wrap {
+  flex-wrap: wrap;
+}
+.flex_box {
+  display: flex;
+}
+.flex_j_a_center {
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+}
+.flex_j_center {
+  justify-content: center;
+}
+.flex_j_left {
+  justify-content: left;
+}
+.flex_j_right {
+  justify-content: right;
+}
+.flex_a_center {
+  align-items: center;
+  align-self: center;
+}
+.flex_a_top {
+  align-items: flex-start;
+}
+.flex_a_bottom {
+  align-items: flex-end;
+}
+.flex_a_stretch {
+  align-items: stretch;
+}
+.flex_margin_center {
+  margin-left: auto;
+  margin-right: auto;
+}
+.flex_margin_left {
+  margin-left: auto;
+}
+.flex_margin_right {
+  margin-right: auto;
+}
+.flex_row-reverse {
+  flex-direction: row-reverse;
+}
+
+.center {
+  text-align: center !important;
+}
+.left {
+  text-align: left !important;
+}
+.right {
+  text-align: right !important;
+}
+
+.fw700 {
+  font-weight: 700;
+}
+.fw600 {
+  font-weight: 600;
+}
+.fw500 {
+  font-weight: 500;
+}
+.fw400 {
+  font-weight: 400;
+}
+.fw300 {
+  font-weight: 300;
+}
+
+/* Prevent autofill background flash */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  transition:
+    color 9999s ease-out,
+    background-color 9999s ease-out !important;
+  transition-delay: 9999s !important;
+}
+
+[hidden],
+.hidden {
+  display: none !important;
+}
+
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+  clip: auto;
+  clip-path: none;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  white-space: inherit;
+  width: auto;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.clearfix::before,
+.clearfix::after {
+  content: ' ';
+  display: table;
+}
+.clearfix::after {
+  clear: both;
+}

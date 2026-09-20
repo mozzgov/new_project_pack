@@ -1,0 +1,27 @@
+// Bootstrap 5 entry with granular imports so you only ship what you use.
+// Bootstrap still relies on Sass @import for its shared variable state; Vite
+// resolves the `bootstrap/scss/...` package paths from node_modules.
+
+// 1. Functions first, then your overrides, then Bootstrap's variables.
+@import 'bootstrap/scss/functions';
+@import 'variables'; // ./_variables.scss — your overrides
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/root';
+
+// 2. Required base
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/type';
+@import 'bootstrap/scss/containers';
+@import 'bootstrap/scss/forms';
+@import 'bootstrap/scss/buttons';
+
+// 3. Optional components (toggle in ./_components.scss)
+@import 'components';
+
+// 4. Helpers + utilities API (keep last)
+@import 'bootstrap/scss/helpers';
+@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/utilities/api';
