@@ -12,6 +12,12 @@ const DEFAULT_OPTIONS: Required<Omit<MenuToggleOptions, 'menuSelector' | 'toggle
   animationDuration: 300
 };
 
+function prefersReducedMotion(): boolean {
+  return (
+    typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
 function animateMenu(menu: HTMLElement, opening: boolean, duration: number): Promise<void> {
   if (opening) {
     menu.style.display = 'flex';
@@ -25,7 +31,8 @@ function animateMenu(menu: HTMLElement, opening: boolean, duration: number): Pro
 
   const targetHeight = opening ? menu.scrollHeight : 0;
 
-  const canAnimate = typeof menu.animate === 'function';
+  // Respect the user's motion preference: open/close instantly, no animation.
+  const canAnimate = typeof menu.animate === 'function' && !prefersReducedMotion();
 
   if (!canAnimate) {
     menu.style.display = opening ? 'flex' : 'none';
@@ -77,30 +84,62 @@ export function initMenuToggle(options: MenuToggleOptions): void {
   menu.style.display = 'none';
   let isAnimating = false;
 
+  // A11y: wire toggles to the menu. Reflect state via aria-expanded, and point
+  // aria-controls at the menu's id (generating one if needed) so assistive tech
+  // knows which element each toggle operates.
+  if (!menu.id) {
+    menu.id = 'menu-toggle-target';
+  }
+  toggles.forEach((toggle) => {
+    toggle.setAttribute('aria-controls', menu.id);
+    toggle.setAttribute('aria-expanded', 'false');
+  });
+
+  const setExpanded = (expanded: boolean) => {
+    toggles.forEach((toggle) => toggle.setAttribute('aria-expanded', String(expanded)));
+  };
+
   const openMenu = async (toggle: HTMLElement) => {
     toggle.classList.add(activeClass);
     menu.classList.add(openClass);
+    setExpanded(true);
     await animateMenu(menu, true, animationDuration);
   };
 
   const closeMenu = async (toggle: HTMLElement) => {
     toggle.classList.remove(activeClass);
     menu.classList.remove(openClass);
+    setExpanded(false);
     await animateMenu(menu, false, animationDuration);
+  };
+
+  const runToggle = (toggle: HTMLElement, shouldOpen: boolean) => {
+    if (isAnimating) {
+      return;
+    }
+    isAnimating = true;
+    void (shouldOpen ? openMenu(toggle) : closeMenu(toggle)).finally(() => {
+      isAnimating = false;
+    });
   };
 
   toggles.forEach((toggle) => {
     toggle.addEventListener('click', (event) => {
       event.preventDefault();
-      if (isAnimating) {
-        return;
-      }
-
-      isAnimating = true;
       const isActive = toggle.classList.contains(activeClass);
-      void (isActive ? closeMenu(toggle) : openMenu(toggle)).finally(() => {
-        isAnimating = false;
-      });
+      runToggle(toggle, !isActive);
     });
+  });
+
+  // A11y: Escape closes the menu when it is open, restoring focus context.
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') {
+      return;
+    }
+    if (!menu.classList.contains(openClass)) {
+      return;
+    }
+    const activeToggle = toggles.find((toggle) => toggle.classList.contains(activeClass)) ?? toggles[0];
+    runToggle(activeToggle, false);
   });
 }

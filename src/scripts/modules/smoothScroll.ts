@@ -25,9 +25,13 @@ export function initSmoothScroll({ linkSelector, defaultOffset = 0 }: SmoothScro
 
       const top = target.getBoundingClientRect().top + window.scrollY + offset;
 
+      // Respect the user's motion preference: jump instantly instead of animating.
+      const reducedMotion =
+        typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
       window.scrollTo({
         top,
-        behavior: 'smooth'
+        behavior: reducedMotion ? 'auto' : 'smooth'
       });
     });
   });
