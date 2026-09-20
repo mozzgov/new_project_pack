@@ -11,6 +11,8 @@
     "start": "vite",
     "build": "vite build",
     "build:watch": "vite build --watch",
+    "build:wp": "vite build --mode wp",
+    "watch:wp": "vite build --watch --mode wp",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

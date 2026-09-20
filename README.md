@@ -107,6 +107,41 @@ Third-party or hand-written files that must ship **as-is** (unbundled, unhashed)
 
 Use this for classic (non-module) scripts, prebuilt libraries, or any CSS/JS you don't want Vite to touch. Use the bundled paths above (imports from `src/`) when you *do* want hashing, minification and tree-shaking.
 
+## Use inside a WordPress / CMS theme
+
+When the site is rendered by a backend (WordPress, etc.) that enqueues the built assets from the theme's `dist/`, use the **`wp` mode**. It builds a single, predictable entry — `dist/assets/main.js` + `dist/assets/main.css` (no content hashes, no HTML) — so your `functions.php` can reference fixed paths that don't change on every rebuild.
+
+Develop with auto-rebuild into `dist/`, then just refresh the page (e.g. `testsite.local/catalog/`):
+
+```bash
+npm run watch:wp    # rebuild dist/ on every src change (stable names)
+npm run build:wp    # one-off production build for the theme
+```
+
+`functions.php` — enqueue with `filemtime` cache-busting (so a rebuild busts the browser cache) and load `main.js` as an ES module:
+
+```php
+add_action('wp_enqueue_scripts', function () {
+    $dir = get_template_directory() . '/dist/assets';
+    $uri = get_template_directory_uri() . '/dist/assets';
+
+    wp_enqueue_style('theme-main', "$uri/main.css", [],
+        file_exists("$dir/main.css") ? filemtime("$dir/main.css") : null);
+
+    wp_enqueue_script('theme-main', "$uri/main.js", [],
+        file_exists("$dir/main.js") ? filemtime("$dir/main.js") : null, true);
+});
+
+// main.js is an ES module — emit type="module".
+add_filter('script_loader_tag', function ($tag, $handle, $src) {
+    return $handle === 'theme-main'
+        ? '<script type="module" src="' . esc_url($src) . '"></script>' . "\n"
+        : $tag;
+}, 10, 3);
+```
+
+Assets from `public/` (fonts, `vendor/`, favicon) still land in `dist/` and are referenced by absolute theme path. If you'd rather keep Vite's HMR instead of refreshing, use the "Backend Integration" note in `vite.config.ts` (`manifest: true`) and point the theme at `http://localhost:3000/@vite/client` during dev.
+
 ## Static assets
 
 Put files that must be served verbatim (favicons, web fonts, `robots.txt`, `vendor/`) in `public/`; they land at the site root. Import images/fonts from `src/` instead to let Vite hash and optimize them.
